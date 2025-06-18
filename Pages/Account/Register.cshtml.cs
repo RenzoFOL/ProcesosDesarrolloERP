@@ -65,7 +65,7 @@ public class InputModel
                     new { userId = user.Id, token }, Request.Scheme);
 
                 var body = $"<p>Gracias por registrarte. Confirma tu cuenta haciendo clic aquí:</p><p><a href='{confirmationLink}'>Confirmar cuenta</a></p>";
-                await _emailService.SendEmailAsync(Input.Email, "Confirma tu cuenta - ManaSys", body);
+                //await _emailService.SendEmailAsync(Input.Email, "Confirma tu cuenta - ManaSys", body);
 
                 Success = true;
                 return Page();

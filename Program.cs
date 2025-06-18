@@ -121,4 +121,34 @@ app.MapPost("/Account/Logout", async (SignInManager<ApplicationUser> signInManag
 
 // Mapear Razor Pages
 app.MapRazorPages();
+using (var scope = app.Services.CreateScope())
+{
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+    var superAdmin = await userManager.FindByEmailAsync("renol1099@gmail.com");
+
+    if (superAdmin != null)
+    {
+        string nuevaContrasena = "SuperAdmin123!";
+        var token = await userManager.GeneratePasswordResetTokenAsync(superAdmin);
+        var resultado = await userManager.ResetPasswordAsync(superAdmin, token, nuevaContrasena);
+
+        if (resultado.Succeeded)
+        {
+            Console.WriteLine("✅ Contraseña restablecida correctamente.");
+        }
+        else
+        {
+            Console.WriteLine("❌ Error al restablecer:");
+            foreach (var error in resultado.Errors)
+            {
+                Console.WriteLine($"- {error.Description}");
+            }
+        }
+    }
+    else
+    {
+        Console.WriteLine("❌ No se encontró el SuperAdmin con ese correo.");
+    }
+}
+
 app.Run();

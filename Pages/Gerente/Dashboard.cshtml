@@ -14,16 +14,15 @@
         </ol>
     </nav>
 
-    <!-- 👤 Encabezado personalizado -->
-    <div class="mb-4">
-        <h2>Hola, Ricardo Arenas 👋 ¿Qué haremos hoy?</h2>
-    </div>
+<div class="mb-4">
+    <h2>Hola, @User.Identity?.Name 👋 ¿Qué haremos hoy?</h2>
+</div>
 
     <!-- 📊 Tarjetas con enlaces -->
     <div class="row g-4">
         <!-- Productos -->
         <div class="col-md-3">
-            <a href="/Gerente/Productos" class="text-decoration-none">
+            <a href="/Gerente/ProductoSus" class="text-decoration-none">
                 <div class="card text-white bg-primary dashboard-card h-100">
                     <div class="card-body text-center d-flex flex-column justify-content-center">
                         <h5 class="card-title">Administrar Productos</h5>

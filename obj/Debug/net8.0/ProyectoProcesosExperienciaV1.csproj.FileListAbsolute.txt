@@ -144,3 +144,4 @@ C:\Users\renol\ProyectoProcesosExperienciaV1\obj\Debug\net8.0\rjimswa.dswa.cache
 C:\Users\renol\ProyectoProcesosExperienciaV1\obj\Debug\net8.0\rjsmrazor.dswa.cache.json
 C:\Users\renol\ProyectoProcesosExperienciaV1\obj\Debug\net8.0\rjsmcshtml.dswa.cache.json
 C:\Users\renol\ProyectoProcesosExperienciaV1\obj\Debug\net8.0\staticwebassets.build.json.cache
+C:\Users\renol\ProyectoProcesosExperienciaV1\obj\Debug\net8.0\ProyectoProcesosExperienciaV1.sourcelink.json
