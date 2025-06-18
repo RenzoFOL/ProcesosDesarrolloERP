@@ -1,0 +1,42 @@
+@page
+@model ProyectoProcesosExperienciaV1.Pages.Admin.DashboardModel
+@{
+    ViewData["Title"] = "Panel del Administrador";
+}
+
+<div class="container mt-4">
+    <div class="text-center mb-4">
+        <h2 class="text-primary">¡Bienvenido, Administrador!</h2>
+        <p class="lead">Gestión total del sistema ManaSys.</p>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card shadow border-primary">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Usuarios</h5>
+                    <p class="card-text">Crea, asigna roles y controla accesos.</p>
+                    <a href="/Admin/Usuarios" class="btn btn-outline-primary">Administrar</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow border-success">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Inventario</h5>
+                    <p class="card-text">Visualiza productos y existencias.</p>
+                    <a href="/Inventario" class="btn btn-outline-success">Ver Inventario</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow border-info">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Reportes</h5>
+                    <p class="card-text">Genera reportes y gráficas por periodo.</p>
+                    <a href="/Admin/Reportes" class="btn btn-outline-info">Ir a reportes</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

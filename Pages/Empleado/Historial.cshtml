@@ -1,0 +1,135 @@
+@page
+@model ProyectoProcesosExperienciaV1.Pages.Empleado.HistorialModel
+@{
+    ViewData["Title"] = "Historial de Ventas - ManaSys";
+     var ordenSeleccionado = Request.Query["orden"].ToString();
+}
+
+<link rel="stylesheet" href="~/css/empleado-historial.css" />
+
+<div class="container mt-5">
+    <!-- 🧭 Migajas de pan -->
+    <nav aria-label="breadcrumb" class="breadcrumb-wrapper mb-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/Empleado/Dashboard">Inicio</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Historial</li>
+        </ol>
+    </nav>
+
+    <!-- 🏷️ Título y buscador -->
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-3">
+        <h2 class="m-0">Historial de Ventas</h2>
+        <form method="get" class="input-group buscador-mejorado" style="max-width: 400px;">
+            <input asp-for="Busqueda" class="form-control" placeholder="Buscar por ID de salida o fecha..." />
+
+            <button type="submit" class="btn btn-primary">
+                <img src="~/icons/icon-search.svg" alt="Buscar" width="20" height="20" />
+            </button>
+        </form>
+    </div>
+@if (!string.IsNullOrEmpty(TempData["MensajeExito"] as string))
+{
+    <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+        @TempData["MensajeExito"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+    </div>
+}
+@if (!string.IsNullOrEmpty(TempData["MensajeError"] as string))
+{
+    <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+        @TempData["MensajeError"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+    </div>
+}
+
+<div class="mb-3 d-flex flex-wrap gap-3 align-items-center">
+    <label class="fw-bold me-2">Ordenar por:</label>
+    <select class="form-select w-auto" onchange="location = this.value;">
+        @if (string.IsNullOrEmpty(ordenSeleccionado))
+        {
+            <option disabled selected>Selecciona una opción</option>
+        }
+        else
+        {
+            <option disabled>Selecciona una opción</option>
+        }
+
+        <option value="/Empleado/Historial?orden=FechaDesc" selected="@(ordenSeleccionado == "FechaDesc")">Recientes</option>
+        <option value="/Empleado/Historial?orden=FechaAsc" selected="@(ordenSeleccionado == "FechaAsc")">Antiguos</option>
+        <option value="/Empleado/Historial?orden=Cantidad" selected="@(ordenSeleccionado == "Cantidad")">Por Cantidad</option>
+    </select>
+</div>
+
+<div class="mb-4 d-flex flex-wrap gap-2">
+    <a class="btn btn-outline-danger" asp-page="./Historial">🔄 Restablecer</a>
+    <a class="btn btn-outline-dark" href="/Empleado/Inventario">📦 Ver Inventario</a>
+    <a class="btn btn-outline-success" href="/Empleado/Ventas">💼 Continuar Ventas</a>
+</div>
+
+
+    @if (Model.Salidas != null && Model.Salidas.Count > 0)
+    {
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID Venta</th>
+                        <th>ID Producto</th>
+                        <th>Cantidad Vendida</th>
+                        <th>Fecha de Venta</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+<tbody>
+@foreach (var salida in Model.Salidas)
+{
+    <tr>
+        <td>
+            <strong>#@salida.ID_Salida</strong>
+        </td>
+        <td>@salida.fkID_Producto</td>
+        <td>@salida.Cantidad</td>
+        <td>@salida.FechaSalida.ToString("dd/MM/yyyy")</td>
+        <td>
+            <!-- Botón Reclamo -->
+            <button class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalReclamo_@salida.ID_Salida">
+                Reclamo
+            </button>
+
+            <!-- Modal Reclamo -->
+            <div class="modal fade" id="modalReclamo_@salida.ID_Salida" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <form method="post" asp-page-handler="ProcesarReclamo">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Autorizar reclamo de venta #@salida.ID_Salida</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <input type="hidden" name="ID_Salida" value="@salida.ID_Salida" />
+                                <p>Ingrese el código de autorización del gerente:</p>
+                                <input type="password" class="form-control" name="CodigoAutorizacion" placeholder="Código de gerente" required />
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                <button type="submit" class="btn btn-danger">Procesar devolución</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </td>
+    </tr>
+}
+</tbody>
+
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-warning text-center" role="alert">
+            No hay ventas registradas aún.
+        </div>
+    }
+</div>

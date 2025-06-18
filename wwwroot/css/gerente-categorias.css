@@ -1,0 +1,46 @@
+.table th, .table td {
+    vertical-align: middle;
+    text-align: center;
+}
+
+button {
+    min-width: 80px;
+}
+
+.alert {
+    text-align: center;
+}
+
+.tabla-con-scroll {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.table thead th {
+    cursor: pointer;
+    user-select: none;
+}
+.user-icon {
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    background-color: #1e1e2f;
+    padding: 4px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.user-icon:hover {
+    transform: scale(1.15);
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+}
+
+.dropdown-menu {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.dropdown-menu.show {
+    display: flex !important;
+    opacity: 1;
+}

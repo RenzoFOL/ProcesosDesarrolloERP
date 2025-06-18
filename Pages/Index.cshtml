@@ -1,0 +1,77 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Inicio";
+}
+
+<!-- Hero Bienvenida Animado -->
+<section class="hero-bienvenida">
+    <h1>Bienvenido a <span class="fw-bold">ManaSys</span></h1>
+    <p>Una solución inteligente y eficiente para la gestión de inventario de papelerías.</p>
+    <div class="botones">
+        <a href="/Account/Register" class="btn btn-light btn-lg text-dark fw-semibold px-4 btn-hero">Soy nuevo</a>
+        <a href="/Account/Login" class="btn btn-outline-light btn-lg fw-semibold px-4 btn-hero">Ya tengo una cuenta</a>
+    </div>
+</section>
+
+<!-- Quiénes Somos -->
+<section class="container pt-3 pb-5 anim-fade-up delay-1">
+
+    <h2 class="text-center mb-4">¿Quiénes somos?</h2>
+    <div class="row align-items-center">
+        <div class="col-md-6">
+            <p class="fs-5">
+                En <strong>ManaSoft</strong> nos especializamos en desarrollar soluciones digitales pensadas en las pequeñas y medianas empresas.
+                <br /><br />
+                <strong>ManaSys</strong> nace como una herramienta para papelerías que buscan una gestión moderna, intuitiva y centrada en el usuario.
+            </p>
+        </div>
+        <div class="col-md-6 text-center">
+            <img src="https://cdn-icons-png.flaticon.com/512/6062/6062649.png" alt="Papelería digital" class="img-fluid rounded shadow-sm" style="max-height: 300px;" />
+        </div>
+    </div>
+</section>
+
+<!-- Funcionalidades -->
+<section class="bg-light py-5">
+    <div class="container">
+        <h2 class="text-center mb-4 anim-fade-up delay-1">¿Qué puedes hacer con ManaSys?</h2>
+        <div class="row g-4 text-center">
+            <div class="col-md-4 anim-fade-up delay-1">
+                <div class="card card-hover shadow-sm h-100">
+
+                    <div class="card-body">
+                        <h5 class="card-title">Gestión de Productos</h5>
+                        <p class="card-text">Registra, actualiza y controla todos los artículos de tu papelería con facilidad.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 anim-fade-up delay-2">
+                <div class="card card-hover shadow-sm h-100">
+
+                    <div class="card-body">
+                        <h5 class="card-title">Control de Inventario</h5>
+                        <p class="card-text">Visualiza en tiempo real el stock disponible y evita errores en la administración.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 anim-fade-up delay-3">
+                <div class="card card-hover shadow-sm h-100">
+
+                    <div class="card-body">
+                        <h5 class="card-title">Historial</h5>
+                        <p class="card-text">Consulta fácilmente historial de entradas y salidas de productos.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Final -->
+<section class="cta-final anim-fade-up delay-2">
+    <h2 class="display-5 fw-bold">¡Empieza a usar <span class="text-accent">ManaSys</span> hoy mismo!</h2>
+    <p class="lead mb-4">Regístrate y comienza a mejorar tu gestión de papelería en minutos.</p>
+    <a class="btn btn-light btn-lg btn-cta" href="/Account/Register">Crear una cuenta</a>
+</section>
+

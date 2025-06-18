@@ -1,0 +1,122 @@
+@page
+@model ProyectoProcesosExperienciaV1.Pages.Gerente.InventarioModel
+@{
+    ViewData["Title"] = "Inventario";
+        var ordenSeleccionado = Request.Query["orden"].ToString();
+}
+
+<link rel="stylesheet" href="~/css/inventario-gerente.css" />
+<link rel="stylesheet" href="~/css/buscador-mejorado.css" />
+
+<div class="container mt-5">
+<!-- 🧭 Migas de pan -->
+<nav aria-label="breadcrumb" class="breadcrumb-wrapper mb-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/Gerente/Dashboard">Inicio</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Inventario</li>
+    </ol>
+</nav>
+
+<!-- 🔍 Título, Ordenar por y Formulario de búsqueda -->
+<div class="d-flex justify-content-between align-items-center flex-wrap mb-4 gap-3">
+
+    <!-- Título -->
+    <h2 class="m-0 order-1">Inventario</h2>
+
+    <!-- Ordenar por -->
+    <div class="d-flex align-items-center gap-2 order-2">
+        <label class="fw-bold m-0">Ordenar por:</label>
+        <select class="form-select w-auto"
+                onchange="location = this.value;">
+            @if (string.IsNullOrEmpty(ordenSeleccionado))
+            {
+                <option disabled selected>Selecciona una opción</option>
+            }
+            else
+            {
+                <option disabled>Selecciona una opción</option>
+            }
+
+            <option value="/Gerente/Inventario?orden=AZ" selected="@(ordenSeleccionado == "AZ")">A-Z</option>
+            <option value="/Gerente/Inventario?orden=ZA" selected="@(ordenSeleccionado == "ZA")">Z-A</option>
+            <option value="/Gerente/Inventario?orden=PrecioAsc" selected="@(ordenSeleccionado == "PrecioAsc")">Precio: Menor a mayor</option>
+            <option value="/Gerente/Inventario?orden=PrecioDesc" selected="@(ordenSeleccionado == "PrecioDesc")">Precio: Mayor a menor</option>
+            <option value="/Gerente/Inventario?orden=StockAsc" selected="@(ordenSeleccionado == "StockAsc")">Stock: Bajo a alto</option>
+            <option value="/Gerente/Inventario?orden=StockDesc" selected="@(ordenSeleccionado == "StockDesc")">Stock: Alto a bajo</option>
+        </select>
+    </div>
+
+    <!-- Buscador -->
+    <form method="get" class="input-group buscador-mejorado w-100 w-md-50 order-3" style="max-width: 500px;">
+        <input asp-for="Busqueda" class="form-control" placeholder="Buscar por ID, nombre o categoría..." />
+        <button type="submit" class="btn btn-primary">
+            <img src="~/icons/icon-search.svg" alt="Buscar" width="20" height="20" />
+        </button>
+    </form>
+</div>
+
+<!-- 🔽 Botones de navegación -->
+<div class="mb-4 d-flex flex-wrap gap-2">
+    <a class="btn btn-outline-danger" asp-page="./Inventario">🔄 Restablecer</a>
+    <a class="btn btn-outline-primary" href="/Gerente/ProductoSus">📦 Productos</a>
+    <a class="btn btn-outline-warning" href="/Gerente/Categorias">🗂️ Categorías</a>
+    <a class="btn btn-outline-success" href="/Gerente/Entradas">📥 Entradas</a>
+</div>
+
+
+
+    <!-- 📦 Tabla de productos -->
+    <div class="table-responsive">
+        <table class="table table-hover table-bordered">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Descripción</th>
+                    <th>Categoría</th>
+                    <th>Stock Actual</th>
+                    <th>Precio Venta</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var producto in Model.Productos)
+                {
+                    <tr>
+                        <td>@producto.ID_Producto</td>
+                        <td>@producto.Nombre</td>
+                        <td>@producto.Descripcion</td>
+                        <td>@producto.NombreCategoria</td>
+                        <td>@producto.StockActual</td>
+                        <td>@(producto.PrecioVenta.ToString("C"))</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 🛑 Mensaje si no hay productos -->
+    @if (!Model.Productos.Any())
+    {
+        <div class="alert alert-info text-center mt-4">
+            No se encontraron productos en el inventario.
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const filas = document.querySelectorAll('tbody tr');
+            filas.forEach(fila => {
+                const stockCell = fila.cells[4];
+                const stock = parseInt(stockCell.textContent);
+
+                if (stock <= 5 && stock > 0) {
+                    stockCell.classList.add('text-warning', 'fw-bold');
+                } else if (stock <= 0) {
+                    stockCell.classList.add('text-danger', 'fw-bold');
+                }
+            });
+        });
+    </script>
+}

@@ -1,0 +1,179 @@
+@page
+@model ProyectoProcesosExperienciaV1.Pages.Gerente.EntradasModel
+@{
+    ViewData["Title"] = "Entradas de Productos";
+}
+
+<link rel="stylesheet" href="~/css/gerente-entradas.css" />
+<link rel="stylesheet" href="~/css/buscador-mejorado.css" />
+
+
+<div class="container mt-4">
+    <!-- 🧭 Migajas de pan -->
+    <nav aria-label="breadcrumb" class="breadcrumb-wrapper mb-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/Gerente/Dashboard">Inicio</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Entradas</li>
+        </ol>
+    </nav>
+
+    <h2 class="mb-4">Registrar Entrada</h2>
+
+    @if (TempData["Mensaje"] != null)
+    {
+        <div class="alert alert-success">@TempData["Mensaje"]</div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Error"]</div>
+    }
+
+    <form method="post" class="row g-3">
+        <div class="col-md-3">
+            <label class="form-label">ID Producto</label>
+            <input type="text" class="form-control" asp-for="NuevaEntrada.fkID_Producto" placeholder="Ej: PRD001" />
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Cantidad</label>
+            <input type="number" class="form-control" asp-for="NuevaEntrada.Cantidad" min="1" placeholder="Ej: 100" />
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Precio Entrada</label>
+            <input type="number" step="0.01" class="form-control" asp-for="NuevaEntrada.Precio_Entrada" min="0" placeholder="Ej: 25.00" />
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Precio Venta</label>
+            <input type="number" step="0.01" class="form-control" asp-for="NuevaEntrada.Precio_Venta" min="0" placeholder="Ej: 30.00" />
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Fecha Entrada</label>
+            <input type="date" class="form-control" asp-for="NuevaEntrada.FechaEntrada" />
+        </div>
+        <div class="col-md-2 d-flex align-items-end">
+            <button type="submit" class="btn btn-success w-100">Agregar Entrada</button>
+        </div>
+    </form>
+
+    <hr class="my-4" />
+
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-3">
+
+    <!-- Título -->
+    <h4 class="m-0 order-1">Historial de Entradas</h4>
+
+    <!-- Ordenar por (arriba y alineado con título/buscador) -->
+    <div class="d-flex flex-wrap align-items-center gap-2 order-2">
+        <label class="fw-bold m-0">Ordenar por:</label>
+        <select class="form-select w-auto" disabled>
+            <option selected>Selecciona una opción</option>
+            <option>A-Z</option>
+            <option>Z-A</option>
+            <option>Precio: Menor a mayor</option>
+            <option>Precio: Mayor a menor</option>
+            <option>Stock: Bajo a alto</option>
+            <option>Stock: Alto a bajo</option>
+        </select>
+    </div>
+
+    <!-- Buscador (máximo 500px) -->
+    <div class="order-3" style="flex-grow: 1; max-width: 500px;">
+        <form class="input-group buscador-mejorado shadow-sm w-100" onsubmit="return false;">
+            <input type="text" id="buscadorEntradas" class="form-control" placeholder="Buscar por ID, nombre o fecha..." />
+            <button type="button" class="btn btn-primary px-4">
+                <img src="~/icons/icon-search.svg" alt="Buscar" width="18" height="18" />
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- Botones debajo -->
+<div class="mb-4 d-flex flex-wrap gap-2">
+    <a class="btn btn-outline-danger" href="#">🔄 Restablecer</a>
+
+    <a class="btn btn-outline-primary" href="/Gerente/ProductoSus">📦 Productos</a>
+    <a class="btn btn-outline-warning" href="/Gerente/Categoraias">🗂️ Categorias</a>
+    <a class="btn btn-outline-success" href="/Gerente/Inventario">📊 Inventraio</a>
+</div>
+
+</div>
+    <div class="tabla-con-scroll table-responsive">
+        <table class="table table-striped table-bordered mt-3" id="tablaEntradas">
+            <thead class="table-dark">
+                <tr>
+                    <th onclick="ordenarPorColumna(0)">ID Entrada</th>
+                    <th onclick="ordenarPorColumna(1)">ID Producto</th>
+                    <th onclick="ordenarPorColumna(2)">Nombre Producto</th>
+                    <th onclick="ordenarPorColumna(3)">Cantidad</th>
+                    <th onclick="ordenarPorColumna(4)">Fecha</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var entrada in Model.ListaEntradas)
+                {
+                    <tr>
+                        <td>@entrada.ID_Entrada</td>
+                        <td>@entrada.ID_Producto</td>
+                        <td>@entrada.NombreProducto</td>
+                        <td>@entrada.Cantidad</td>
+                        <td>@entrada.FechaEntrada.ToString("yyyy-MM-dd")</td>
+                        <td>
+                            <form method="post" asp-page-handler="Eliminar" asp-route-id="@entrada.ID_Entrada" class="d-inline">
+                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('⚠️ ¿Seguro que deseas eliminar esta entrada? Esto no eliminará el producto.')">
+                                    Eliminar
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById("buscadorEntradas").addEventListener("input", function () {
+            const filtro = this.value.toLowerCase();
+            const filas = document.querySelectorAll("#tablaEntradas tbody tr");
+
+            filas.forEach(fila => {
+                const texto = fila.textContent.toLowerCase();
+                fila.style.display = texto.includes(filtro) ? "" : "none";
+            });
+        });
+
+        function ordenarPorColumna(n) {
+            const tabla = document.getElementById("tablaEntradas");
+            let switching = true, shouldSwitch, dir = "asc", switchcount = 0;
+
+            while (switching) {
+                switching = false;
+                const rows = tabla.rows;
+
+                for (let i = 1; i < rows.length - 1; i++) {
+                    shouldSwitch = false;
+                    let x = rows[i].getElementsByTagName("TD")[n];
+                    let y = rows[i + 1].getElementsByTagName("TD")[n];
+
+                    if ((dir === "asc" && x.innerText.toLowerCase() > y.innerText.toLowerCase()) ||
+                        (dir === "desc" && x.innerText.toLowerCase() < y.innerText.toLowerCase())) {
+                        shouldSwitch = true;
+                        break;
+                    }
+                }
+
+                if (shouldSwitch) {
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                    switchcount++;
+                } else if (switchcount === 0 && dir === "asc") {
+                    dir = "desc";
+                    switching = true;
+                }
+            }
+        }
+    </script>
+    
+}

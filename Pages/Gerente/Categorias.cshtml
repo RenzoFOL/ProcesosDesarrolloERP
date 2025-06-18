@@ -1,0 +1,734 @@
+@page
+@model ProyectoProcesosExperienciaV1.Pages.Gerente.CategoriasModel
+@{
+    ViewData["Title"] = "Gestión de Categorías";
+}
+
+<link rel="stylesheet" href="~/css/gerente-categorias.css" />
+<link rel="stylesheet" href="~/css/buscador-mejorado.css" />
+
+
+<div class="container mt-4">
+    <!-- 🧭 Migajas de pan -->
+    <nav aria-label="breadcrumb" class="breadcrumb-wrapper mb-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/Gerente/Dashboard">Inicio</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Categorías</li>
+        </ol>
+    </nav>
+
+    <h2 class="mb-4">Administrar Categorías</h2>
+
+    @if (TempData["Mensaje"] != null)
+    {
+        <div class="alert alert-success text-center">@TempData["Mensaje"]</div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger text-center">@TempData["Error"]</div>
+    }
+
+    <form method="post" class="row g-3 mb-4">
+        <div class="col-md-6">
+            <label class="form-label">Nombre Categoría</label>
+            <input asp-for="NuevaCategoria.Nombre" class="form-control" placeholder="Ej: Papelería, Electrónica..." />
+        </div>
+        <div class="col-md-3 d-flex align-items-end">
+            <button type="submit" class="btn btn-success w-100">Agregar</button>
+        </div>
+        <div class="col-md-3 d-flex align-items-end">
+    <button type="button" class="btn btn-outline-secondary w-100" data-bs-toggle="modal" data-bs-target="#modalCantidadCategorias">
+        Agregar múltiples
+    </button>
+</div>
+    </form>
+<!-- 🧭 Título + Ordenar + Buscador -->
+<div class="d-flex justify-content-between align-items-center flex-wrap mb-4 gap-3">
+
+    <!-- Título -->
+    <h4 class="m-0 order-1">Listado de Categorías</h4>
+
+    <!-- Ordenar por -->
+    <div class="d-flex align-items-center gap-2 order-2">
+        <label class="fw-bold m-0">Ordenar por:</label>
+        <select class="form-select w-auto" disabled>
+            <option selected>Selecciona una opción</option>
+            <option>A-Z</option>
+            <option>Z-A</option>
+            <option>Precio: Menor a mayor</option>
+            <option>Precio: Mayor a menor</option>
+            <option>Stock: Bajo a alto</option>
+            <option>Stock: Alto a bajo</option>
+        </select>
+    </div>
+
+    <!-- Buscador -->
+    <div class="order-3" style="flex-grow: 1; max-width: 500px;">
+        <form class="input-group buscador-mejorado w-100" onsubmit="return false;">
+            <input type="text" id="buscadorCategorias" class="form-control" placeholder="Buscar por nombre..." />
+            <button type="button" class="btn btn-primary">
+                <img src="~/icons/icon-search.svg" alt="Buscar" width="20" height="20" />
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- 🔽 Botones de navegación -->
+<div class="mb-4 d-flex flex-wrap gap-2">
+    <a class="btn btn-outline-danger" href="#">🔄 Restablecer</a>
+
+    <a class="btn btn-outline-primary" href="/Gerente/ProductoSus">📦 Productos</a>
+    <a class="btn btn-outline-warning" href="/Gerente/Inventario">📊 Inventario</a>
+    <a class="btn btn-outline-success" href="/Gerente/Entradas">📥 Entradas</a>
+</div>
+
+
+    <div class="tabla-con-scroll table-responsive">
+        <table class="table table-bordered table-striped mt-3" id="tablaCategorias">
+            <thead class="table-dark">
+                <tr>
+                    <th onclick="ordenarPorColumna(0)">ID</th>
+                    <th onclick="ordenarPorColumna(1)">Nombre Categoría</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+@foreach (var categoria in Model.ListaCategorias)
+{
+    <tr>
+        <td>@categoria.ID_Categoria</td>
+        <td>@categoria.Nombre</td>
+        <td>
+            <button class="btn btn-danger btn-sm" onclick="confirmarEliminacion(@categoria.ID_Categoria)">
+                🗑️ Eliminar
+            </button>
+        </td>
+    </tr>
+}
+            </tbody>
+        </table>
+    </div>
+</div>
+<!-- Modal 1: Ingresar cantidad -->
+<div class="modal fade" id="modalCantidadCategorias" tabindex="-1" aria-labelledby="modalCantidadCategoriasLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalCantidadCategoriasLabel">Agregar múltiples categorías</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <label>Cantidad de categorías a agregar:</label>
+        <input type="number" min="1" max="20" class="form-control" id="cantidadCategorias" placeholder="Ej: 5, Maximo 20">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" onclick="generarCamposCategorias()">Generar campos</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal 2: Ingresar nombres -->
+<div class="modal fade" id="modalCamposCategorias" tabindex="-1" aria-labelledby="modalCamposCategoriasLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Nuevas Categorías</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <form id="formCategoriasMultiples">
+          <div id="contenedorCamposCategorias" class="row g-2"></div>
+        </form>
+      </div>
+<div class="modal-footer justify-content-between">
+    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+        ❌ Cerrar
+    </button>
+<button type="button" class="btn btn-success" id="btnConfirmarCategorias" onclick="confirmarEnvioCategorias()">
+    ➕ Añadir
+</button>
+
+</div>
+
+    </div>
+  </div>
+</div>
+<!-- Modal 3: Confirmar envío -->
+<!-- Modal de Confirmación -->
+<div class="modal fade" id="modalConfirmacionCategorias" tabindex="-1" aria-labelledby="modalConfirmacionLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalConfirmacionLabel">📝 Confirmar Categorías</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <p>Se agregarán las siguientes categorías:</p>
+        <ul id="listaCategoriasConfirmacion" class="list-group">
+          <!-- Rellenado dinámicamente -->
+        </ul>
+        <div class="form-check mt-3">
+            <input class="form-check-input" type="checkbox" id="noMostrarConfirmacion">
+            <label class="form-check-label" for="noMostrarConfirmacion">
+                No volver a mostrar este mensaje
+            </label>
+        </div>
+      </div>
+<div class="modal-footer justify-content-between">
+    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+        ❌ Cerrar
+    </button>
+
+    <div class="d-flex gap-2">
+        <button type="button" class="btn btn-secondary" data-bs-target="#modalCamposCategorias" data-bs-toggle="modal" data-bs-dismiss="modal">
+            ⬅️ Atrás
+        </button>
+        <button type="button" class="btn btn-success" id="btnConfirmarEnvio">
+            ✅ Confirmar
+        </button>
+    </div>
+</div>
+
+    </div>
+  </div>
+</div>
+<!-- Modal Confirmar Eliminación -->
+<div class="modal fade" id="modalConfirmarEliminar" tabindex="-1" aria-labelledby="modalEliminarLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-danger">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title" id="modalEliminarLabel">⚠️ ¿Estás seguro?</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <p class="mb-3">
+          <strong>Al eliminar esta categoría, también se eliminarán todos los productos que pertenezcan a ella.</strong>
+        </p>
+        <p>Esta acción no se puede deshacer. ¿Deseas continuar?</p>
+        
+        <div class="form-check mt-3">
+          <input class="form-check-input" type="checkbox" id="noConfirmarEliminacion">
+          <label class="form-check-label" for="noConfirmarEliminacion">
+            No volver a mostrar esta confirmación
+          </label>
+        </div>
+      </div>
+      <div class="modal-footer justify-content-between">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-danger" id="btnEliminarConfirmado">
+          🗑️ Eliminar definitivamente
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+@section Scripts {
+    <script>
+    let noMostrarConfirmacion = localStorage.getItem('noMostrarConfirmacionCategorias') === 'true';
+
+    function generarCamposCategorias() {
+        const cantidad = parseInt(document.getElementById('cantidadCategorias').value);
+        const contenedor = document.getElementById('contenedorCamposCategorias');
+        contenedor.innerHTML = '';
+
+        if (isNaN(cantidad) || cantidad < 1 || cantidad > 20) {
+            alert("Ingresa una cantidad válida (1 a 20)");
+            return;
+        }
+
+        for (let i = 0; i < cantidad; i++) {
+            const div = document.createElement('div');
+            div.className = 'input-group col-md-6 mb-2';
+
+            div.innerHTML = `
+                <input type="text" name="categorias[]" class="form-control" placeholder="Nombre categoría #${i + 1}" required>
+                <button type="button" class="btn btn-danger" onclick="this.parentElement.remove()">🗑️</button>
+            `;
+
+            contenedor.appendChild(div);
+        }
+
+        // Cerrar modal 1 y abrir modal 2
+        const modal1 = bootstrap.Modal.getInstance(document.getElementById('modalCantidadCategorias'));
+        modal1.hide();
+        new bootstrap.Modal(document.getElementById('modalCamposCategorias')).show();
+    }
+
+    function confirmarEnvioCategorias() {
+        const inputs = document.querySelectorAll('input[name="categorias[]"]');
+        const categorias = Array.from(inputs).map(i => i.value.trim()).filter(cat => cat !== '');
+
+        // Validar campos vacíos
+        if (categorias.length === 0 || inputs.length !== categorias.length) {
+            alert("⚠️ Todos los campos deben estar llenos.");
+            return;
+        }
+
+        // Verificar duplicados
+        const categoriasLower = categorias.map(c => c.toLowerCase());
+        const duplicados = categoriasLower.filter((item, index) => categoriasLower.indexOf(item) !== index);
+        if (duplicados.length > 0) {
+            alert("⚠️ Hay categorías duplicadas en el formulario.");
+            return;
+        }
+
+        // Si no se debe mostrar confirmación, enviar directamente
+        if (noMostrarConfirmacion) {
+            enviarCategorias(categorias);
+            return;
+        }
+
+        // Mostrar modal de confirmación
+        const lista = document.getElementById("listaCategoriasConfirmacion");
+        lista.innerHTML = "";
+        categorias.forEach(cat => {
+            const li = document.createElement("li");
+            li.className = "list-group-item";
+            li.textContent = cat;
+            lista.appendChild(li);
+        });
+
+        // Cerrar modal 2 y abrir modal 3
+        const modalCampos = bootstrap.Modal.getInstance(document.getElementById("modalCamposCategorias"));
+        if (modalCampos) modalCampos.hide();
+        new bootstrap.Modal(document.getElementById("modalConfirmacionCategorias")).show();
+    }
+
+    function enviarCategorias(categorias = null) {
+        // Si no se pasan categorías, obtenerlas del formulario
+        if (!categorias) {
+            const inputs = document.querySelectorAll('input[name="categorias[]"]');
+            categorias = Array.from(inputs).map(input => input.value.trim()).filter(val => val !== "");
+        }
+
+        if (categorias.length === 0) {
+            alert("⚠️ No hay categorías válidas para enviar.");
+            return;
+        }
+
+        // Crear formulario para envío POST
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '/Gerente/Categorias?handler=AgregarMultiples';
+        
+        // Añadir token antiforgery
+        const tokenInput = document.createElement('input');
+        tokenInput.type = 'hidden';
+        tokenInput.name = '__RequestVerificationToken';
+        tokenInput.value = document.querySelector('input[name="__RequestVerificationToken"]').value;
+        form.appendChild(tokenInput);
+
+        // Añadir categorías
+        categorias.forEach(categoria => {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'categorias';
+            input.value = categoria;
+            form.appendChild(input);
+        });
+
+        // Enviar formulario
+        document.body.appendChild(form);
+        form.submit();
+    }
+
+    // Event listener para el botón de confirmar envío
+    document.addEventListener('DOMContentLoaded', function() {
+        const btnConfirmarEnvio = document.getElementById("btnConfirmarEnvio");
+        if (btnConfirmarEnvio) {
+            btnConfirmarEnvio.addEventListener("click", function() {
+                // Guardar preferencia si está marcada
+                const checkbox = document.getElementById('noMostrarConfirmacion');
+                if (checkbox && checkbox.checked) {
+                    localStorage.setItem('noMostrarConfirmacionCategorias', 'true');
+                    noMostrarConfirmacion = true;
+                }
+
+                // Cerrar modal de confirmación
+                const modal = bootstrap.Modal.getInstance(document.getElementById("modalConfirmacionCategorias"));
+                if (modal) modal.hide();
+
+                // Enviar categorías
+                enviarCategorias();
+            });
+        }
+    });
+
+    // Navegación con teclado en los inputs
+    document.addEventListener('keydown', function (e) {
+        const active = document.activeElement;
+        const inputs = [...document.querySelectorAll('input[name="categorias[]"]')];
+        const index = inputs.indexOf(active);
+
+        if (index >= 0) {
+            if (e.key === 'Enter' || e.key === 'ArrowDown') {
+                e.preventDefault();
+                if (index < inputs.length - 1) {
+                    inputs[index + 1].focus();
+                } else {
+                    // Si es el último input, enfocar el botón de añadir
+                    document.getElementById('btnConfirmarCategorias')?.focus();
+                }
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                if (index > 0) {
+                    inputs[index - 1].focus();
+                }
+            }
+        }
+    });
+
+    </script>
+
+    <!-- Script para buscador y ordenamiento -->
+    <script>
+        document.getElementById("buscadorCategorias").addEventListener("input", function () {
+            const filtro = this.value.toLowerCase();
+            const filas = document.querySelectorAll("#tablaCategorias tbody tr");
+
+            filas.forEach(fila => {
+                const texto = fila.textContent.toLowerCase();
+                fila.style.display = texto.includes(filtro) ? "" : "none";
+            });
+        });
+
+        function ordenarPorColumna(n) {
+            const tabla = document.getElementById("tablaCategorias");
+            let switching = true, dir = "asc", switchcount = 0;
+
+            while (switching) {
+                switching = false;
+                const rows = tabla.rows;
+
+                for (let i = 1; i < rows.length - 1; i++) {
+                    let shouldSwitch = false;
+                    let x = rows[i].getElementsByTagName("TD")[n];
+                    let y = rows[i + 1].getElementsByTagName("TD")[n];
+
+                    if ((dir === "asc" && x.innerText.toLowerCase() > y.innerText.toLowerCase()) ||
+                        (dir === "desc" && x.innerText.toLowerCase() < y.innerText.toLowerCase())) {
+                        rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                        switching = true;
+                        switchcount++;
+                    }
+                }
+
+                if (switchcount === 0 && dir === "asc") {
+                    dir = "desc";
+                    switching = true;
+                }
+            }
+        }
+    </script>
+    <script>
+        let idCategoriaPendienteEliminar = null;
+let noMostrarEliminar = localStorage.getItem('noMostrarEliminarCategoria') === 'true';
+
+function confirmarEliminacion(id) {
+    if (noMostrarEliminar) {
+        ejecutarEliminacion(id);
+        return;
+    }
+
+    idCategoriaPendienteEliminar = id;
+    const modal = new bootstrap.Modal(document.getElementById('modalConfirmarEliminar'));
+    modal.show();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('btnEliminarConfirmado').addEventListener('click', () => {
+        const checkbox = document.getElementById('noConfirmarEliminacion');
+        if (checkbox.checked) {
+            localStorage.setItem('noMostrarEliminarCategoria', 'true');
+            noMostrarEliminar = true;
+        }
+
+        const modal = bootstrap.Modal.getInstance(document.getElementById('modalConfirmarEliminar'));
+        modal.hide();
+
+        if (idCategoriaPendienteEliminar) {
+            ejecutarEliminacion(idCategoriaPendienteEliminar);
+        }
+    });
+});
+
+function ejecutarEliminacion(id) {
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = `/Gerente/Categorias?handler=Eliminar`;
+
+    const token = document.querySelector('input[name="__RequestVerificationToken"]');
+    const tokenInput = document.createElement('input');
+    tokenInput.type = 'hidden';
+    tokenInput.name = '__RequestVerificationToken';
+    tokenInput.value = token.value;
+
+    const idInput = document.createElement('input');
+    idInput.type = 'hidden';
+    idInput.name = 'id';
+    idInput.value = id;
+
+    form.appendChild(tokenInput);
+    form.appendChild(idInput);
+    document.body.appendChild(form);
+    form.submit();
+}
+
+    </script>
+    <script>
+    let noMostrarConfirmacion = localStorage.getItem('noMostrarConfirmacionCategorias') === 'true';
+    let noConfirmarEliminacion = localStorage.getItem('noConfirmarEliminacion') === 'true';
+    let categoriaAEliminar = null;
+
+    // Función para confirmar eliminación
+    function confirmarEliminacion(idCategoria) {
+        categoriaAEliminar = idCategoria;
+        
+        if (noConfirmarEliminacion) {
+            eliminarCategoria(idCategoria);
+        } else {
+            new bootstrap.Modal(document.getElementById('modalConfirmarEliminar')).show();
+        }
+    }
+
+    // Función para eliminar categoría
+    function eliminarCategoria(idCategoria) {
+        // Crear formulario para envío POST
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '/Gerente/Categorias?handler=Eliminar&id=' + idCategoria;
+        
+        // Añadir token antiforgery
+        const tokenInput = document.createElement('input');
+        tokenInput.type = 'hidden';
+        tokenInput.name = '__RequestVerificationToken';
+        tokenInput.value = document.querySelector('input[name="__RequestVerificationToken"]').value;
+        form.appendChild(tokenInput);
+
+        // Enviar formulario
+        document.body.appendChild(form);
+        form.submit();
+    }
+
+    // Event listener para el botón de confirmación de eliminación
+    document.addEventListener('DOMContentLoaded', function() {
+        const btnEliminarConfirmado = document.getElementById("btnEliminarConfirmado");
+        if (btnEliminarConfirmado) {
+            btnEliminarConfirmado.addEventListener("click", function() {
+                // Guardar preferencia si está marcada
+                const checkbox = document.getElementById('noConfirmarEliminacion');
+                if (checkbox && checkbox.checked) {
+                    localStorage.setItem('noConfirmarEliminacion', 'true');
+                    noConfirmarEliminacion = true;
+                }
+
+                // Cerrar modal
+                const modal = bootstrap.Modal.getInstance(document.getElementById("modalConfirmarEliminar"));
+                if (modal) modal.hide();
+
+                // Eliminar categoría
+                if (categoriaAEliminar) {
+                    eliminarCategoria(categoriaAEliminar);
+                }
+            });
+        }
+    });
+
+    // Resto de funciones para agregar múltiples categorías
+    function generarCamposCategorias() {
+        const cantidad = parseInt(document.getElementById('cantidadCategorias').value);
+        const contenedor = document.getElementById('contenedorCamposCategorias');
+        contenedor.innerHTML = '';
+
+        if (isNaN(cantidad) || cantidad < 1 || cantidad > 20) {
+            alert("Ingresa una cantidad válida (1 a 20)");
+            return;
+        }
+
+        for (let i = 0; i < cantidad; i++) {
+            const div = document.createElement('div');
+            div.className = 'input-group col-md-6 mb-2';
+
+            div.innerHTML = `
+                <input type="text" name="categorias[]" class="form-control" placeholder="Nombre categoría #${i + 1}" required>
+                <button type="button" class="btn btn-danger" onclick="this.parentElement.remove()">🗑️</button>
+            `;
+
+            contenedor.appendChild(div);
+        }
+
+        // Cerrar modal 1 y abrir modal 2
+        const modal1 = bootstrap.Modal.getInstance(document.getElementById('modalCantidadCategorias'));
+        modal1.hide();
+        new bootstrap.Modal(document.getElementById('modalCamposCategorias')).show();
+    }
+
+    function confirmarEnvioCategorias() {
+        const inputs = document.querySelectorAll('input[name="categorias[]"]');
+        const categorias = Array.from(inputs).map(i => i.value.trim()).filter(cat => cat !== '');
+
+        // Validar campos vacíos
+        if (categorias.length === 0 || inputs.length !== categorias.length) {
+            alert("⚠️ Todos los campos deben estar llenos.");
+            return;
+        }
+
+        // Verificar duplicados
+        const categoriasLower = categorias.map(c => c.toLowerCase());
+        const duplicados = categoriasLower.filter((item, index) => categoriasLower.indexOf(item) !== index);
+        if (duplicados.length > 0) {
+            alert("⚠️ Hay categorías duplicadas en el formulario.");
+            return;
+        }
+
+        // Si no se debe mostrar confirmación, enviar directamente
+        if (noMostrarConfirmacion) {
+            enviarCategorias(categorias);
+            return;
+        }
+
+        // Mostrar modal de confirmación
+        const lista = document.getElementById("listaCategoriasConfirmacion");
+        lista.innerHTML = "";
+        categorias.forEach(cat => {
+            const li = document.createElement("li");
+            li.className = "list-group-item";
+            li.textContent = cat;
+            lista.appendChild(li);
+        });
+
+        // Cerrar modal 2 y abrir modal 3
+        const modalCampos = bootstrap.Modal.getInstance(document.getElementById("modalCamposCategorias"));
+        if (modalCampos) modalCampos.hide();
+        new bootstrap.Modal(document.getElementById("modalConfirmacionCategorias")).show();
+    }
+
+    function enviarCategorias(categorias = null) {
+        // Si no se pasan categorías, obtenerlas del formulario
+        if (!categorias) {
+            const inputs = document.querySelectorAll('input[name="categorias[]"]');
+            categorias = Array.from(inputs).map(input => input.value.trim()).filter(val => val !== "");
+        }
+
+        if (categorias.length === 0) {
+            alert("⚠️ No hay categorías válidas para enviar.");
+            return;
+        }
+
+        // Crear formulario para envío POST
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '/Gerente/Categorias?handler=AgregarMultiples';
+        
+        // Añadir token antiforgery
+        const tokenInput = document.createElement('input');
+        tokenInput.type = 'hidden';
+        tokenInput.name = '__RequestVerificationToken';
+        tokenInput.value = document.querySelector('input[name="__RequestVerificationToken"]').value;
+        form.appendChild(tokenInput);
+
+        // Añadir categorías
+        categorias.forEach(categoria => {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'categorias';
+            input.value = categoria;
+            form.appendChild(input);
+        });
+
+        // Enviar formulario
+        document.body.appendChild(form);
+        form.submit();
+    }
+
+    // Event listener para el botón de confirmar envío de categorías múltiples
+    document.addEventListener('DOMContentLoaded', function() {
+        const btnConfirmarEnvio = document.getElementById("btnConfirmarEnvio");
+        if (btnConfirmarEnvio) {
+            btnConfirmarEnvio.addEventListener("click", function() {
+                // Guardar preferencia si está marcada
+                const checkbox = document.getElementById('noMostrarConfirmacion');
+                if (checkbox && checkbox.checked) {
+                    localStorage.setItem('noMostrarConfirmacionCategorias', 'true');
+                    noMostrarConfirmacion = true;
+                }
+
+                // Cerrar modal de confirmación
+                const modal = bootstrap.Modal.getInstance(document.getElementById("modalConfirmacionCategorias"));
+                if (modal) modal.hide();
+
+                // Enviar categorías
+                enviarCategorias();
+            });
+        }
+    });
+
+    // Navegación con teclado en los inputs
+    document.addEventListener('keydown', function (e) {
+        const active = document.activeElement;
+        const inputs = [...document.querySelectorAll('input[name="categorias[]"]')];
+        const index = inputs.indexOf(active);
+
+        if (index >= 0) {
+            if (e.key === 'Enter' || e.key === 'ArrowDown') {
+                e.preventDefault();
+                if (index < inputs.length - 1) {
+                    inputs[index + 1].focus();
+                } else {
+                    document.getElementById('btnConfirmarCategorias')?.focus();
+                }
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                if (index > 0) {
+                    inputs[index - 1].focus();
+                }
+            }
+        }
+    });
+
+    // Buscador de categorías
+    document.getElementById("buscadorCategorias").addEventListener("input", function () {
+        const filtro = this.value.toLowerCase();
+        const filas = document.querySelectorAll("#tablaCategorias tbody tr");
+
+        filas.forEach(fila => {
+            const texto = fila.textContent.toLowerCase();
+            fila.style.display = texto.includes(filtro) ? "" : "none";
+        });
+    });
+
+    // Ordenamiento de tabla
+    function ordenarPorColumna(n) {
+        const tabla = document.getElementById("tablaCategorias");
+        let switching = true, dir = "asc", switchcount = 0;
+
+        while (switching) {
+            switching = false;
+            const rows = tabla.rows;
+
+            for (let i = 1; i < rows.length - 1; i++) {
+                let shouldSwitch = false;
+                let x = rows[i].getElementsByTagName("TD")[n];
+                let y = rows[i + 1].getElementsByTagName("TD")[n];
+
+                if ((dir === "asc" && x.innerText.toLowerCase() > y.innerText.toLowerCase()) ||
+                    (dir === "desc" && x.innerText.toLowerCase() < y.innerText.toLowerCase())) {
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                    switchcount++;
+                }
+            }
+
+            if (switchcount === 0 && dir === "asc") {
+                dir = "desc";
+                switching = true;
+            }
+        }
+    }
+
+    </script>
+}

@@ -1,0 +1,68 @@
+@page
+@model ProyectoProcesosExperienciaV1.Pages.Account.AyudaModel
+@{
+    ViewData["Title"] = "Centro de Ayuda";
+}
+
+<link rel="stylesheet" href="~/css/empleado-configuracion.css" />
+
+<div class="container mt-5">
+    <!-- 🧭 Migas de pan -->
+    <nav aria-label="breadcrumb" class="breadcrumb-wrapper mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/Empleado/Dashboard">Inicio</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Ayuda</li>
+        </ol>
+    </nav>
+
+    <div class="row g-4">
+        <!-- ❓ Sección de Preguntas Frecuentes -->
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-info text-white">
+                    <h5 class="m-0">Preguntas Frecuentes</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled">
+                        <li class="mb-3">
+                            <strong>¿Cómo puedo registrar una venta?</strong><br />
+                            Dirígete a la sección "Ventas" desde el menú lateral y completa el formulario con los productos.
+                        </li>
+                        <li class="mb-3">
+                            <strong>¿Dónde consulto el inventario disponible?</strong><br />
+                            En el menú lateral selecciona "Inventario". Ahí podrás filtrar por categorías y buscar productos.
+                        </li>
+                        <li class="mb-3">
+                            <strong>¿Puedo cambiar mi contraseña?</strong><br />
+                            Sí, desde la sección "Perfil", en el apartado de "Perfil del Usuario".
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 📘 Sección de Contacto y Soporte -->
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100 d-flex flex-column justify-content-between">
+                <div>
+                    <div class="card-header bg-warning text-dark">
+                        <h5 class="m-0">Contacto y Soporte</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>Si necesitas asistencia adicional o deseas reportar un problema técnico, comunícate con el equipo de soporte:</p>
+                        <ul>
+                            <li><strong>Correo:</strong> soporte@manasys.com</li>
+                            <li><strong>Teléfono:</strong> 228-355-9099</li>
+                            <li><strong>Horario:</strong> Lunes a Viernes, 9:00 a.m. – 6:00 p.m.</li>
+                        </ul>
+                        <p>También puedes consultar la documentación oficial del sistema o solicitar una capacitación rápida.</p>
+                    </div>
+                </div>
+                <div class="card-footer bg-light d-flex flex-column gap-2">
+                    <button class="btn btn-outline-primary w-100" type="button">📘 Solicitar Capacitación</button>
+                    <button class="btn btn-outline-secondary w-100" type="button">📄 Solicitar Documentación</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

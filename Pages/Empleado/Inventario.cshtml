@@ -1,0 +1,405 @@
+@page
+@model ProyectoProcesosExperienciaV1.Pages.Empleado.InventarioModel
+@{
+    ViewData["Title"] = "Inventario";
+    var ordenSeleccionado = Request.Query["orden"].ToString();
+}
+
+<link rel="stylesheet" href="~/css/inventario.css" />
+
+<div class="container mt-5">
+    <!-- 🧭 Migajas de pan -->
+    <nav aria-label="breadcrumb" class="breadcrumb-wrapper mb-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/Empleado/Dashboard">Inicio</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Inventario</li>
+        </ol>
+    </nav>
+
+    <!-- 🏷️ Título y buscador alineados -->
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-3">
+        <h2 class="m-0">Inventario</h2>
+        <form method="get" class="input-group buscador-mejorado" style="max-width: 400px;">
+            <input asp-for="Busqueda" class="form-control" placeholder="Buscar por ID, nombre o categoría..." />
+            <button type="submit" class="btn btn-primary">
+                <img src="~/icons/icon-search.svg" alt="Buscar" width="20" height="20" />
+            </button>
+        </form>
+    </div>
+
+    <!-- 🔽 Botones de orden -->
+<div class="mb-3 d-flex flex-wrap gap-3 align-items-center">
+    <label class="fw-bold me-2">Ordenar por:</label>
+    <select class="form-select w-auto" onchange="location = this.value;">
+        @if (string.IsNullOrEmpty(ordenSeleccionado))
+        {
+            <option disabled selected>Selecciona una opción</option>
+        }
+        else
+        {
+            <option disabled>Selecciona una opción</option>
+        }
+
+        <option value="/Empleado/Inventario?orden=AZ" selected="@(ordenSeleccionado == "AZ")">A-Z</option>
+        <option value="/Empleado/Inventario?orden=ZA" selected="@(ordenSeleccionado == "ZA")">Z-A</option>
+        <option value="/Empleado/Inventario?orden=PrecioAsc" selected="@(ordenSeleccionado == "PrecioAsc")">Precio: Menor a mayor</option>
+        <option value="/Empleado/Inventario?orden=PrecioDesc" selected="@(ordenSeleccionado == "PrecioDesc")">Precio: Mayor a menor</option>
+        <option value="/Empleado/Inventario?orden=StockAsc" selected="@(ordenSeleccionado == "StockAsc")">Stock: Bajo a alto</option>
+        <option value="/Empleado/Inventario?orden=StockDesc" selected="@(ordenSeleccionado == "StockDesc")">Stock: Alto a bajo</option>
+    </select>
+</div>
+
+<div class="mb-4 d-flex flex-wrap gap-2">
+    <a class="btn btn-outline-danger" asp-page="./Inventario">🔄 Restablecer</a>
+    <a class="btn btn-outline-warning" href="/Empleado/Historial">🕒 Ver Historial</a>
+    <a class="btn btn-outline-success" href="/Empleado/Ventas">💼 Continuar Ventas</a>
+</div>
+
+
+    <!-- 📦 Tabla de productos -->
+    <div class="table-responsive">
+        <table class="table table-hover table-bordered">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Descripción</th>
+                    <th>Categoría</th>
+                    <th>Stock Actual</th>
+                    <th>Precio Venta</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var producto in Model.Productos)
+                {
+                    <tr>
+                        <td>@producto.ID_Producto</td>
+                        <td>@producto.Nombre</td>
+                        <td>@producto.Descripcion</td>
+                        <td>@producto.NombreCategoria</td>
+                        <td>@producto.StockActual</td>
+                        <td>@(producto.PrecioVenta.ToString("C"))</td>
+                        <td>
+                            @if (producto.StockActual > 0)
+                            {
+                                <button type="button" 
+                                        class="btn btn-success btn-sm btn-agregar-carrito" 
+                                        data-id="@producto.ID_Producto"
+                                        data-nombre="@producto.Nombre"
+                                        data-precio="@producto.PrecioVenta"
+                                        data-stock="@producto.StockActual"
+                                        data-categoria="@producto.NombreCategoria"
+                                        data-descripcion="@producto.Descripcion">
+                                    🛒 Añadir al carrito
+                                </button>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">Sin stock</span>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 🛑 Sin resultados -->
+    @if (!Model.Productos.Any())
+    {
+        <div class="alert alert-info text-center mt-4">
+            No se encontraron productos en el inventario.
+        </div>
+    }
+</div>
+
+<!-- 🛒 Modal para agregar al carrito -->
+<div class="modal fade" id="modalAgregarCarrito" tabindex="-1" aria-labelledby="modalAgregarCarritoLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title" id="modalAgregarCarritoLabel">
+                    🛒 Añadir producto al carrito
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Información del producto -->
+                <div class="card mb-3 border-success">
+                    <div class="card-header bg-light">
+                        <h6 class="card-title mb-0">📦 Información del producto</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p class="mb-2"><strong>ID:</strong> <span id="modal-producto-id"></span></p>
+                                <p class="mb-2"><strong>Nombre:</strong> <span id="modal-producto-nombre"></span></p>
+                                <p class="mb-2"><strong>Categoría:</strong> <span id="modal-producto-categoria"></span></p>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="mb-2"><strong>Stock disponible:</strong> <span id="modal-producto-stock" class="badge bg-primary"></span></p>
+                                <p class="mb-2"><strong>Precio:</strong> <span id="modal-producto-precio" class="text-success fw-bold"></span></p>
+                            </div>
+                        </div>
+                        <p class="mb-0"><strong>Descripción:</strong> <span id="modal-producto-descripcion" class="text-muted"></span></p>
+                    </div>
+                </div>
+
+                <!-- Selección de cantidad -->
+                <div class="card border-primary">
+                    <div class="card-header bg-light">
+                        <h6 class="card-title mb-0">🔢 Seleccionar cantidad</h6>
+                    </div>
+                    <div class="card-body">
+                        <form id="formAgregarCarrito" method="post" asp-page="/Empleado/Ventas" asp-page-handler="AgregarDesdeInventario">
+                            <input type="hidden" id="input-producto-id" name="ID_Producto" />
+                            
+                            <div class="row align-items-end">
+                                <div class="col-md-8">
+                                    <label for="input-cantidad" class="form-label">Cantidad a agregar:</label>
+                                    <input type="number" 
+                                           id="input-cantidad" 
+                                           name="Cantidad" 
+                                           class="form-control" 
+                                           min="1" 
+                                           value="1" 
+                                           required>
+                                    <div class="form-text">
+                                        Máximo disponible: <span id="cantidad-maxima"></span> unidades
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="d-grid gap-2">
+                                        <button type="button" class="btn btn-outline-secondary btn-sm" id="btn-cantidad-rapida-1">+1</button>
+                                        <button type="button" class="btn btn-outline-secondary btn-sm" id="btn-cantidad-rapida-5">+5</button>
+                                        <button type="button" class="btn btn-outline-secondary btn-sm" id="btn-cantidad-rapida-10">+10</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Subtotal calculado -->
+                            <div class="mt-3 p-3 bg-light rounded">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="fw-bold">Subtotal:</span>
+                                    <span id="subtotal-calculado" class="fs-5 text-success fw-bold">$0.00</span>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    ❌ Cancelar
+                </button>
+                <button type="button" class="btn btn-success" id="btn-confirmar-agregar">
+                    🛒 Añadir al carrito
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // === APLICAR ESTILOS A STOCK ===
+            const rows = document.querySelectorAll('tbody tr');
+            rows.forEach(row => {
+                const stockCell = row.cells[4];
+                const stock = parseInt(stockCell.textContent);
+
+                if (stock <= 5 && stock > 0) {
+                    stockCell.classList.add('text-warning', 'fw-bold');
+                } else if (stock <= 0) {
+                    stockCell.classList.add('text-danger', 'fw-bold');
+                }
+            });
+
+            // === VARIABLES DEL MODAL ===
+            const modal = new bootstrap.Modal(document.getElementById('modalAgregarCarrito'));
+            const form = document.getElementById('formAgregarCarrito');
+            const inputCantidad = document.getElementById('input-cantidad');
+            const inputProductoId = document.getElementById('input-producto-id');
+            
+            let stockMaximo = 0;
+            let precioUnitario = 0;
+
+            // === ELEMENTOS DEL MODAL ===
+            const modalProductoId = document.getElementById('modal-producto-id');
+            const modalProductoNombre = document.getElementById('modal-producto-nombre');
+            const modalProductoCategoria = document.getElementById('modal-producto-categoria');
+            const modalProductoStock = document.getElementById('modal-producto-stock');
+            const modalProductoPrecio = document.getElementById('modal-producto-precio');
+            const modalProductoDescripcion = document.getElementById('modal-producto-descripcion');
+            const cantidadMaxima = document.getElementById('cantidad-maxima');
+            const subtotalCalculado = document.getElementById('subtotal-calculado');
+
+            // === BOTONES DE CANTIDAD RÁPIDA ===
+            const btnCantidad1 = document.getElementById('btn-cantidad-rapida-1');
+            const btnCantidad5 = document.getElementById('btn-cantidad-rapida-5');
+            const btnCantidad10 = document.getElementById('btn-cantidad-rapida-10');
+            const btnConfirmarAgregar = document.getElementById('btn-confirmar-agregar');
+
+            // === FUNCIÓN PARA CALCULAR SUBTOTAL ===
+            function calcularSubtotal() {
+                const cantidad = parseInt(inputCantidad.value) || 0;
+                const subtotal = cantidad * precioUnitario;
+                subtotalCalculado.textContent = subtotal.toLocaleString('es-MX', {
+                    style: 'currency',
+                    currency: 'MXN'
+                });
+            }
+
+            // === FUNCIÓN PARA VALIDAR CANTIDAD ===
+            function validarCantidad() {
+                const cantidad = parseInt(inputCantidad.value) || 0;
+                
+                if (cantidad < 1) {
+                    inputCantidad.value = 1;
+                } else if (cantidad > stockMaximo) {
+                    inputCantidad.value = stockMaximo;
+                    showToast('⚠️ Cantidad ajustada al stock disponible', 'warning');
+                }
+                
+                calcularSubtotal();
+            }
+
+            // === FUNCIÓN PARA MOSTRAR TOAST ===
+            function showToast(mensaje, tipo = 'info') {
+                // Crear toast dinámicamente
+                const toastHtml = `
+                    <div class="toast align-items-center text-white bg-${tipo === 'warning' ? 'warning' : 'primary'} border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                        <div class="d-flex">
+                            <div class="toast-body">${mensaje}</div>
+                            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                        </div>
+                    </div>
+                `;
+                
+                // Crear contenedor de toasts si no existe
+                let toastContainer = document.querySelector('.toast-container');
+                if (!toastContainer) {
+                    toastContainer = document.createElement('div');
+                    toastContainer.className = 'toast-container position-fixed top-0 end-0 p-3';
+                    toastContainer.style.zIndex = '9999';
+                    document.body.appendChild(toastContainer);
+                }
+                
+                // Agregar toast
+                toastContainer.insertAdjacentHTML('beforeend', toastHtml);
+                const toastElement = toastContainer.lastElementChild;
+                const toast = new bootstrap.Toast(toastElement, { delay: 3000 });
+                toast.show();
+                
+                // Limpiar toast después de que se oculte
+                toastElement.addEventListener('hidden.bs.toast', () => {
+                    toastElement.remove();
+                });
+            }
+
+            // === EVENT LISTENERS ===
+
+            // Abrir modal al hacer clic en botón "Añadir al carrito"
+            document.querySelectorAll('.btn-agregar-carrito').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = this.dataset.id;
+                    const nombre = this.dataset.nombre;
+                    const precio = parseFloat(this.dataset.precio);
+                    const stock = parseInt(this.dataset.stock);
+                    const categoria = this.dataset.categoria;
+                    const descripcion = this.dataset.descripcion;
+
+                    // Guardar datos globales
+                    stockMaximo = stock;
+                    precioUnitario = precio;
+
+                    // Llenar información del producto
+                    modalProductoId.textContent = id;
+                    modalProductoNombre.textContent = nombre;
+                    modalProductoCategoria.textContent = categoria;
+                    modalProductoStock.textContent = stock;
+                    modalProductoPrecio.textContent = precio.toLocaleString('es-MX', {
+                        style: 'currency',
+                        currency: 'MXN'
+                    });
+                    modalProductoDescripcion.textContent = descripcion;
+                    cantidadMaxima.textContent = stock;
+
+                    // Configurar formulario
+                    inputProductoId.value = id;
+                    inputCantidad.value = 1;
+                    inputCantidad.max = stock;
+
+                    // Calcular subtotal inicial
+                    calcularSubtotal();
+
+                    // Mostrar modal
+                    modal.show();
+                });
+            });
+
+            // Validar cantidad al cambiar
+            inputCantidad.addEventListener('input', validarCantidad);
+            inputCantidad.addEventListener('change', validarCantidad);
+
+            // Botones de cantidad rápida
+            btnCantidad1.addEventListener('click', () => {
+                const nuevaCantidad = Math.min((parseInt(inputCantidad.value) || 0) + 1, stockMaximo);
+                inputCantidad.value = nuevaCantidad;
+                calcularSubtotal();
+            });
+
+            btnCantidad5.addEventListener('click', () => {
+                const nuevaCantidad = Math.min((parseInt(inputCantidad.value) || 0) + 5, stockMaximo);
+                inputCantidad.value = nuevaCantidad;
+                calcularSubtotal();
+            });
+
+            btnCantidad10.addEventListener('click', () => {
+                const nuevaCantidad = Math.min((parseInt(inputCantidad.value) || 0) + 10, stockMaximo);
+                inputCantidad.value = nuevaCantidad;
+                calcularSubtotal();
+            });
+
+            // Confirmar agregar al carrito
+            btnConfirmarAgregar.addEventListener('click', function() {
+                const cantidad = parseInt(inputCantidad.value);
+                
+                if (!cantidad || cantidad < 1) {
+                    showToast('⚠️ Debe especificar una cantidad válida', 'warning');
+                    inputCantidad.focus();
+                    return;
+                }
+                
+                if (cantidad > stockMaximo) {
+                    showToast('⚠️ La cantidad excede el stock disponible', 'warning');
+                    inputCantidad.focus();
+                    return;
+                }
+
+                // Mostrar indicador de carga
+                const originalText = this.innerHTML;
+                this.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Agregando...';
+                this.disabled = true;
+
+                // Enviar formulario
+                form.submit();
+            });
+
+            // Restablecer modal al cerrarse
+            document.getElementById('modalAgregarCarrito').addEventListener('hidden.bs.modal', function() {
+                inputCantidad.value = 1;
+                btnConfirmarAgregar.innerHTML = '🛒 Añadir al carrito';
+                btnConfirmarAgregar.disabled = false;
+            });
+
+            // Focus automático en cantidad al abrir modal
+            document.getElementById('modalAgregarCarrito').addEventListener('shown.bs.modal', function() {
+                inputCantidad.focus();
+                inputCantidad.select();
+            });
+        });
+    </script>
+}

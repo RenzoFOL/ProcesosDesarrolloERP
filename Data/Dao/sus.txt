@@ -1,0 +1,151 @@
+using ProyectoProcesosExperienciaV1.Data.Modelos;
+using MySql.Data.MySqlClient;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+namespace ProyectoProcesosExperienciaV1.Data.Dao
+{
+    /// <summary>
+    /// DAO para gestionar entradas de productos en la base de datos.
+    /// </summary>
+    public class EntradaDAO
+    {
+        private readonly string _connectionString;
+
+        public EntradaDAO(string connectionString)
+        {
+            _connectionString = connectionString;
+        }
+
+        /// <summary>
+        /// Obtiene todas las entradas de productos.
+        /// </summary>
+        public async Task<List<Entrada>> ObtenerEntradasAsync()
+        {
+            var entradas = new List<Entrada>();
+
+            using var connection = new MySqlConnection(_connectionString);
+            await connection.OpenAsync();
+
+            const string query = "SELECT * FROM Entrada";
+            using var command = new MySqlCommand(query, connection);
+            using var reader = await command.ExecuteReaderAsync();
+
+            while (await reader.ReadAsync())
+            {
+                entradas.Add(new Entrada
+                {
+                    ID_Entrada = Convert.ToInt32(reader["ID_Entrada"]),
+                    fkID_Producto = reader["fkID_Producto"].ToString(),
+                    Cantidad = Convert.ToInt32(reader["Cantidad"]),
+                    Precio_Entrada = Convert.ToDecimal(reader["Precio_Entrada"]),
+                    Precio_Venta = Convert.ToDecimal(reader["Precio_Venta"]),
+                    FechaEntrada = Convert.ToDateTime(reader["FechaEntrada"])
+                });
+            }
+
+            return entradas;
+        }
+
+        /// <summary>
+        /// Inserta una nueva entrada.
+        /// </summary>
+        public async Task AgregarEntradaAsync(Entrada entrada)
+        {
+            using var connection = new MySqlConnection(_connectionString);
+            await connection.OpenAsync();
+
+            const string query = @"INSERT INTO Entrada 
+                (fkID_Producto, Cantidad, Precio_Entrada, Precio_Venta, FechaEntrada)
+                VALUES (@fkID_Producto, @Cantidad, @Precio_Entrada, @Precio_Venta, @FechaEntrada)";
+
+            using var command = new MySqlCommand(query, connection);
+            command.Parameters.AddWithValue("@fkID_Producto", entrada.fkID_Producto);
+            command.Parameters.AddWithValue("@Cantidad", entrada.Cantidad);
+            command.Parameters.AddWithValue("@Precio_Entrada", entrada.Precio_Entrada);
+            command.Parameters.AddWithValue("@Precio_Venta", entrada.Precio_Venta);
+            command.Parameters.AddWithValue("@FechaEntrada", entrada.FechaEntrada);
+
+            await command.ExecuteNonQueryAsync();
+        }
+
+        /// <summary>
+        /// Actualiza una entrada existente.
+        /// </summary>
+        public async Task ActualizarEntradaAsync(Entrada entrada)
+        {
+            using var connection = new MySqlConnection(_connectionString);
+            await connection.OpenAsync();
+
+            const string query = @"UPDATE Entrada SET 
+                fkID_Producto = @fkID_Producto, 
+                Cantidad = @Cantidad,
+                Precio_Entrada = @Precio_Entrada, 
+                Precio_Venta = @Precio_Venta,
+                FechaEntrada = @FechaEntrada
+                WHERE ID_Entrada = @ID_Entrada";
+
+            using var command = new MySqlCommand(query, connection);
+            command.Parameters.AddWithValue("@fkID_Producto", entrada.fkID_Producto);
+            command.Parameters.AddWithValue("@Cantidad", entrada.Cantidad);
+            command.Parameters.AddWithValue("@Precio_Entrada", entrada.Precio_Entrada);
+            command.Parameters.AddWithValue("@Precio_Venta", entrada.Precio_Venta);
+            command.Parameters.AddWithValue("@FechaEntrada", entrada.FechaEntrada);
+            command.Parameters.AddWithValue("@ID_Entrada", entrada.ID_Entrada);
+
+            await command.ExecuteNonQueryAsync();
+        }
+
+        /// <summary>
+        /// Elimina una entrada por su ID.
+        /// </summary>
+        public async Task EliminarEntradaAsync(int idEntrada)
+        {
+            using var connection = new MySqlConnection(_connectionString);
+            await connection.OpenAsync();
+
+            const string query = "DELETE FROM Entrada WHERE ID_Entrada = @ID_Entrada";
+            using var command = new MySqlCommand(query, connection);
+            command.Parameters.AddWithValue("@ID_Entrada", idEntrada);
+
+            await command.ExecuteNonQueryAsync();
+        }
+
+        /// <summary>
+        /// Obtiene todas las entradas con información extendida del producto.
+        /// </summary>
+        public List<EntradaExtendida> ObtenerEntradasExtendidas()
+        {
+            var lista = new List<EntradaExtendida>();
+
+            using var connection = new MySqlConnection(_connectionString);
+            connection.Open();
+
+            const string query = @"
+                SELECT e.ID_Entrada, e.fkID_Producto, p.Nombre, e.Cantidad, 
+                       e.Precio_Entrada, e.Precio_Venta, e.FechaEntrada
+                FROM Entrada e
+                INNER JOIN Producto p ON e.fkID_Producto = p.ID_Producto";
+
+            using var cmd = new MySqlCommand(query, connection);
+            using var reader = cmd.ExecuteReader();
+
+            while (reader.Read())
+            {
+                lista.Add(new EntradaExtendida
+                {
+                    ID_Entrada = reader.GetInt32("ID_Entrada"),
+                    ID_Producto = reader.GetString("fkID_Producto"),
+                    NombreProducto = reader.GetString("Nombre"),
+                    Cantidad = reader.GetInt32("Cantidad"),
+                    Precio_Entrada = reader.GetDecimal("Precio_Entrada"),
+                    Precio_Venta = reader.GetDecimal("Precio_Venta"),
+                    FechaEntrada = reader.GetDateTime("FechaEntrada")
+                });
+            }
+
+            return lista;
+        }
+    }
+}

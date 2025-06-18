@@ -1,0 +1,82 @@
+@page
+@model ProyectoProcesosExperienciaV1.Pages.Gerente.DashboardModel
+@{
+    ViewData["Title"] = "Panel de Gerente";
+}
+
+<link rel="stylesheet" href="~/css/gerente-dashboard.css" />
+
+<div class="container mt-4">
+    <!-- 🧭 Migas de pan -->
+    <nav aria-label="breadcrumb" class="breadcrumb-wrapper mb-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item active text-secondary" aria-current="page">Inicio</li>
+        </ol>
+    </nav>
+
+    <!-- 👤 Encabezado personalizado -->
+    <div class="mb-4">
+        <h2>Hola, Ricardo Arenas 👋 ¿Qué haremos hoy?</h2>
+    </div>
+
+    <!-- 📊 Tarjetas con enlaces -->
+    <div class="row g-4">
+        <!-- Productos -->
+        <div class="col-md-3">
+            <a href="/Gerente/Productos" class="text-decoration-none">
+                <div class="card text-white bg-primary dashboard-card h-100">
+                    <div class="card-body text-center d-flex flex-column justify-content-center">
+                        <h5 class="card-title">Administrar Productos</h5>
+                        <p class="card-text fs-4">120</p>
+                        <small>Ir a la sección de productos</small>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Categorías -->
+        <div class="col-md-3">
+            <a href="/Gerente/Categorias" class="text-decoration-none">
+                <div class="card text-dark bg-warning dashboard-card h-100">
+                    <div class="card-body text-center d-flex flex-column justify-content-center">
+                        <h5 class="card-title">Gestionar Categorías</h5>
+                        <p class="card-text fs-4">8</p>
+                        <small>Ir a la sección de categorías</small>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Entradas -->
+        <div class="col-md-3">
+            <a href="/Gerente/Entradas" class="text-decoration-none">
+                <div class="card text-white bg-success dashboard-card h-100">
+                    <div class="card-body text-center d-flex flex-column justify-content-center">
+                        <h5 class="card-title">Registrar Entradas</h5>
+                        <p class="card-text fs-4">45</p>
+                        <small>Ir a la sección de entradas</small>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Inventario (nueva) -->
+        <div class="col-md-3">
+            <a href="/Gerente/Inventario" class="text-decoration-none">
+                <div class="card text-white bg-dark dashboard-card h-100">
+                    <div class="card-body text-center d-flex flex-column justify-content-center">
+                        <h5 class="card-title">Ver Inventario</h5>
+                        <p class="card-text fs-4">✔️</p>
+                        <small>Ir a la sección de inventario</small>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- 📌 Próximamente -->
+    <div class="mt-5">
+        <h4>📊 Próximamente: Estadísticas avanzadas de inventario</h4>
+        <p class="text-muted">Estamos trabajando en una sección de estadísticas visuales para el gerente.</p>
+    </div>
+</div>

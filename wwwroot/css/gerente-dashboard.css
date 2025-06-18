@@ -1,0 +1,44 @@
+.card {
+    border: none;
+    border-radius: 0.75rem;
+}
+
+.card-title {
+    font-weight: bold;
+}
+
+.card-text {
+    margin-top: 10px;
+}
+
+.container h2 {
+    font-weight: bold;
+}
+
+/* 🔄 Expansión al pasar el mouse */
+.dashboard-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 1rem;
+}
+
+.dashboard-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
+}
+
+/* 🧭 Migajas de pan */
+.breadcrumb-wrapper {
+    margin-bottom: 1rem;
+}
+
+.breadcrumb {
+    background-color: transparent;
+    margin-bottom: 0;
+    font-weight: 500;
+    font-size: 1rem;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+    content: "›";
+    color: #6c757d;
+}

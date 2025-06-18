@@ -1,0 +1,39 @@
+@page
+@model ProyectoProcesosExperienciaV1.Pages.Account.PerfilModel
+@{
+    ViewData["Title"] = "Mi Perfil";
+}
+
+<link rel="stylesheet" href="~/css/empleado-configuracion.css" />
+
+<div class="container mt-5" style="max-width: 500px;">
+    <!-- 🧭 Migas de pan -->
+    <nav aria-label="breadcrumb" class="breadcrumb-wrapper mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/Empleado/Dashboard">Inicio</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Mi Perfil</li>
+        </ol>
+    </nav>
+
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h5 class="m-0">Información del Usuario</h5>
+        </div>
+        <div class="card-body">
+            <div class="mb-3">
+                <label class="form-label">Correo electrónico</label>
+                <input class="form-control" value="@Model.Email" readonly />
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm mt-4">
+        <div class="card-header bg-dark text-white">
+            <h5 class="m-0">Cambio de Contraseña</h5>
+        </div>
+        <div class="card-body text-muted text-center">
+            <p>Esta función no está disponible actualmente en esta versión.</p>
+            <button class="btn btn-outline-secondary w-100" disabled>🔒 Cambiar contraseña</button>
+        </div>
+    </div>
+</div>

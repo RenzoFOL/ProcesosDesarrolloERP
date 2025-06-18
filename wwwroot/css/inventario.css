@@ -1,0 +1,93 @@
+/* Estilos generales */
+body {
+    background-color: #f8f9fa;
+}
+
+/* Títulos */
+h2 {
+    font-weight: bold;
+    color: #343a40;
+}
+
+/* Inputs y selects */
+input#buscarProducto, select#filtroCategoria {
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    transition: box-shadow 0.3s;
+}
+
+input#buscarProducto:focus, select#filtroCategoria:focus {
+    box-shadow: 0 0 8px #007bff;
+}
+
+/* Tabla de productos */
+.table {
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.table th, .table td {
+    vertical-align: middle;
+    text-align: center;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Botones */
+.btn {
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.btn-secondary:hover {
+    background-color: #6c757d;
+    color: #fff;
+}
+
+/* Mensaje sin resultados */
+#mensajeSinResultados {
+    margin-top: 20px;
+    font-size: 1.2rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .d-flex.justify-content-between {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .d-flex.justify-content-between a {
+        margin-top: 10px;
+    }
+
+    .row.mb-3 > div {
+        margin-bottom: 10px;
+    }
+}
+
+.buscador-mejorado input {
+    border-top-left-radius: 1.5rem;
+    border-bottom-left-radius: 1.5rem;
+    font-size: 1rem;
+    padding: 0.75rem 1.25rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    border: 1px solid #dee2e6;
+    height: 48px;
+}
+
+.buscador-mejorado button {
+    border-top-right-radius: 1.5rem;
+    border-bottom-right-radius: 1.5rem;
+    padding: 0 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 48px;
+}
+
+.buscador-mejorado img {
+    filter: brightness(0) invert(1); /* 🔁 lo hace blanco */
+}

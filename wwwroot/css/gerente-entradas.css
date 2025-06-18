@@ -1,0 +1,40 @@
+.container h2,
+.container h4 {
+    font-weight: bold;
+}
+
+/* 🧾 Tabla centrada y clara */
+.table th,
+.table td {
+    vertical-align: middle;
+    text-align: center;
+}
+
+.alert {
+    text-align: center;
+}
+
+/* 📌 Botones uniformes */
+button {
+    min-width: 80px;
+}
+
+/* 🔽 Scroll vertical para tablas */
+.tabla-con-scroll {
+    max-height: 400px;
+    overflow-y: scroll;
+    position: relative;
+}
+
+/* 🟡 Indicador visual de más contenido */
+.tabla-con-scroll::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 30px;
+    background: linear-gradient(to top, #f8f9fa 70%, transparent);
+    pointer-events: none;
+    z-index: 1;
+}

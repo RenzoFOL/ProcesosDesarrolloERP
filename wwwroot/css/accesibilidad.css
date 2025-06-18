@@ -1,0 +1,89 @@
+/* 🔵 Botón flotante de accesibilidad */
+.accesibilidad-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #0d6efd;
+    color: white;
+    padding: 14px 16px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 22px;
+    z-index: 1000;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+    transition: transform 0.2s ease;
+}
+
+.accesibilidad-btn:hover {
+    transform: scale(1.1);
+}
+
+/* 🧩 Menú desplegable de accesibilidad */
+.accesibilidad-menu {
+    position: fixed;
+    bottom: 90px;
+    right: 20px;
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 1rem;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+    display: none;
+    flex-direction: column;
+    gap: 0.5rem;
+    z-index: 1001;
+    min-width: 220px;
+    transition: all 0.3s ease;
+}
+
+.accesibilidad-menu.show {
+    display: flex;
+}
+
+/* ♿ Modo alto contraste */
+body.modo-alto-contraste {
+    background-color: #000 !important;
+    color: #ffff00 !important;
+}
+
+body.modo-alto-contraste a,
+body.modo-alto-contraste h1,
+body.modo-alto-contraste h2,
+body.modo-alto-contraste label {
+    color: #ffff00 !important;
+}
+
+body.modo-alto-contraste input,
+body.modo-alto-contraste button,
+body.modo-alto-contraste select {
+    background-color: #000 !important;
+    color: #ffff00 !important;
+    border-color: #ffff00 !important;
+}
+
+/* 🎨 Modo daltonismo (suave, alto contraste sin saturación) */
+body.modo-daltonismo {
+    background-color: #fdfde3 !important;
+    color: #0d3a6e !important;
+}
+
+body.modo-daltonismo input,
+body.modo-daltonismo button,
+body.modo-daltonismo select {
+    background-color: #ffffff !important;
+    color: #0d3a6e !important;
+    border-color: #0d3a6e !important;
+}
+
+body.modo-daltonismo a {
+    color: #0d3a6e !important;
+    text-decoration: underline;
+}
+
+/* 🔄 Transiciones globales */
+body {
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+input, button, select {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}

@@ -1,0 +1,78 @@
+@page
+@model ProyectoProcesosExperienciaV1.Pages.Account.LoginModel
+@{
+    ViewData["Title"] = "Iniciar sesión - ManaSys";
+}
+
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+
+            <div class="text-center mb-4">
+                <h2>Iniciar Sesión</h2>
+                <p class="text-muted">Ingresa tus credenciales para acceder</p>
+            </div>
+@if (!string.IsNullOrEmpty(Model.ErrorMessage) || !ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert" id="validationAlert">
+        <ul class="mb-0">
+            @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+            {
+                <li>@Model.ErrorMessage</li>
+            }
+            @foreach (var modelState in ViewData.ModelState.Values)
+            {
+                foreach (var error in modelState.Errors)
+                {
+                    <li>@error.ErrorMessage</li>
+                }
+            }
+        </ul>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+    </div>
+}
+
+
+            <form method="post">
+                <div class="mb-3">
+                    <label asp-for="Input.Email" class="form-label">Correo electrónico</label>
+                    <input asp-for="Input.Email" class="form-control" placeholder="ejemplo@correo.com" />
+                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Input.Password" class="form-label">Contraseña</label>
+                    <input asp-for="Input.Password" class="form-control" type="password" placeholder="TuContraseña123" />
+                    <span asp-validation-for="Input.Password" class="text-danger"></span>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100">Entrar</button>
+            </form>
+
+
+            <hr />
+
+<div class="text-center">
+    <a href="/Account/Olvido" class="text-decoration-none d-block mb-2">¿Olvidaste tu contraseña?</a>
+    <a class="btn btn-outline-success" href="/Account/Register">Crear Cuenta</a>
+</div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Cerrar alerta automáticamente después de 5 segundos
+        document.addEventListener("DOMContentLoaded", function () {
+            const alert = document.getElementById("validationAlert");
+            if (alert) {
+                setTimeout(() => {
+                    const bsAlert = bootstrap.Alert.getOrCreateInstance(alert);
+                    bsAlert.close();
+                }, 5000); // 5 segundos
+            }
+        });
+    </script>
+}

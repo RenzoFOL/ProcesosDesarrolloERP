@@ -1,0 +1,469 @@
+/* ------------------------------ */
+/* Base general y estructura     */
+/* ------------------------------ */
+.wrapper {
+    display: flex;
+}
+
+/* Altura de la navbar */
+:root {
+    --navbar-height: 56px;
+}
+
+/* ------------------------------ */
+/* Sidebar lateral                */
+/* ------------------------------ */
+#sidebar {
+    background: #212529;
+    color: #fff;
+    width: 250px;
+    min-width: 80px;
+    height: calc(100vh - var(--navbar-height));
+    position: fixed;
+    top: var(--navbar-height);
+    left: 0;
+    bottom: 0;
+    z-index: 999;
+    display: flex;
+    flex-direction: column;
+    padding-top: 1rem;
+    transition: all 0.3s ease;
+}
+
+/* Sidebar colapsado */
+#sidebar.collapsed {
+    width: 80px;
+}
+
+/* Header del sidebar */
+.sidebar-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    margin-bottom: 1rem;
+}
+
+/* Botón hamburguesa */
+.hamburger {
+    cursor: pointer;
+    width: 36px;
+    transition: transform 0.3s ease;
+}
+
+/* Rotación del botón al colapsar */
+#sidebar.collapsed .hamburger {
+    transform: rotate(90deg);
+}
+
+/* Lista de opciones */
+#sidebar ul.components {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+}
+
+/* Elementos de menú */
+#sidebar ul.components li {
+    width: 100%;
+    text-align: center;
+}
+
+#sidebar ul.components li:hover {
+    background-color: #0056b3;
+    padding-left: 1.5rem;
+}
+
+/* Links del menú */
+#sidebar ul.components li a {
+    display: flex;
+    align-items: center;
+    color: white;
+    text-decoration: none;
+    padding: 10px 20px;
+    transition: color 0.3s;
+}
+
+/* Iconos */
+#sidebar ul.components li a img {
+    width: 36px;
+    height: 36px;
+    object-fit: contain;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+#sidebar ul.components li a:hover img {
+    transform: scale(1.1);
+}
+
+/* Texto de los links */
+.link-text {
+    display: inline-block;
+    margin-left: 10px;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+/* Ocultar texto al colapsar */
+#sidebar.collapsed .link-text {
+    opacity: 0;
+    visibility: hidden;
+}
+
+/* Iconos más opacos al colapsar */
+#sidebar.collapsed ul.components li a img {
+    opacity: 0.7;
+}
+
+/* ------------------------------ */
+/* Contenido principal            */
+/* ------------------------------ */
+.main-content {
+    flex-grow: 1;
+    background: #ffffff;
+    padding: 2rem;
+    margin-left: 250px;
+    margin-top: var(--navbar-height);
+    width: calc(100% - 250px);
+    transition: all 0.3s ease;
+}
+
+/* Ajuste si sidebar está colapsado */
+#sidebar.collapsed + .main-content {
+    margin-left: 80px;
+    width: calc(100% - 80px);
+}
+
+/* Responsive para dispositivos pequeños */
+@media (max-width: 991.98px) {
+    #sidebar {
+        left: -250px;
+    }
+
+    #sidebar.active {
+        left: 0;
+    }
+
+    .main-content {
+        margin-left: 0;
+        width: 100%;
+    }
+}
+
+/* ------------------------------ */
+/* Ajustes sin sidebar (inicio)   */
+/* ------------------------------ */
+.no-sidebar .main-content {
+    margin-left: 0 !important;
+    width: 100% !important;
+}
+
+.centrado-sin-sidebar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    min-height: calc(100vh - var(--navbar-height));
+    padding: 3rem 1rem;
+}
+
+/* ------------------------------ */
+/* Hero visual de bienvenida      */
+/* ------------------------------ */
+.hero-bienvenida {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    color: white;
+    padding: 4rem 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 0 20px rgba(0,0,0,0.2);
+    max-width: 900px;
+    width: 100%;
+    transition: transform 0.3s ease, opacity 0.4s ease;
+    opacity: 0;
+    animation: fadeSlideIn 1s ease forwards;
+}
+
+@keyframes fadeSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.hero-bienvenida:hover {
+    transform: scale(1.01);
+}
+
+.hero-bienvenida h1 {
+    font-size: 3rem;
+    font-weight: bold;
+}
+
+.hero-bienvenida p {
+    font-size: 1.25rem;
+    margin-top: 1rem;
+}
+
+.hero-bienvenida .botones {
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+@media (min-width: 576px) {
+    .hero-bienvenida .botones {
+        flex-direction: row;
+        justify-content: center;
+    }
+}
+
+/* ------------------------------ */
+/* Animaciones de entrada globales */
+/* ------------------------------ */
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeRight {
+    from {
+        opacity: 0;
+        transform: translateX(-40px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeLeft {
+    from {
+        opacity: 0;
+        transform: translateX(40px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.anim-fade-up {
+    opacity: 0;
+    animation: fadeUp 1s ease-out forwards;
+}
+
+.anim-fade-left {
+    opacity: 0;
+    animation: fadeLeft 1s ease-out forwards;
+}
+
+.anim-fade-right {
+    opacity: 0;
+    animation: fadeRight 1s ease-out forwards;
+}
+
+/* Agrega un ligero retraso para secciones consecutivas */
+.delay-1 { animation-delay: 0.2s; }
+.delay-2 { animation-delay: 0.4s; }
+.delay-3 { animation-delay: 0.6s; }
+
+/* Animaciones solo cuando el elemento entra al viewport */
+.anim-fade-up,
+.anim-fade-left,
+.anim-fade-right {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s ease;
+}
+
+.anim-fade-left { transform: translateX(40px); }
+.anim-fade-right { transform: translateX(-40px); }
+
+.anim-fade-up.show,
+.anim-fade-left.show,
+.anim-fade-right.show {
+    opacity: 1;
+    transform: translate(0);
+}
+/* Efecto hover para las tarjetas de funcionalidades */
+.card-hover:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
+.card-hover {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+/* Sección CTA final destacada */
+.cta-final {
+    background: linear-gradient(135deg, #495057, #343a40); /* gradiente oscuro elegante */
+    color: white;
+    text-align: center;
+    padding: 5rem 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.15);
+    margin: 3rem auto 0;
+    max-width: 1000px;
+}
+
+.cta-final h2 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.cta-final .text-accent {
+    color: #0dcaf0; /* celeste Bootstrap */
+}
+
+/* Botón CTA personalizado */
+.btn-cta {
+    padding: 0.75rem 2rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+    border-radius: 0.75rem;
+    transition: all 0.3s ease;
+}
+
+.btn-cta:hover {
+    background-color: #e9ecef;
+    color: #000;
+    transform: scale(1.05);
+}
+/* Efecto hover para botones del hero */
+.btn-hero {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 0.75rem;
+}
+
+.btn-hero:hover {
+    transform: scale(1.08);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+/* Transición suave al desaparecer alertas */
+.alert {
+    opacity: 1;
+    transition: opacity 0.5s ease-out;
+}
+
+.alert.fade-out {
+    opacity: 0;
+}
+/* Ícono del usuario en la navbar */
+.navbar .nav-link img {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    background-color: #1e1e2f;
+    padding: 4px;
+}
+
+.navbar .nav-link img:hover {
+    transform: scale(1.15);
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+}
+/* 🔽 Menú desplegable solo con íconos */
+.dropdown-menu-end {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: #1e1e2f;
+    border-radius: 10px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    padding: 0.5rem;
+    width: 64px;
+    min-width: 64px;
+}
+
+
+.dropdown-menu-end .dropdown-item {
+    background: none;
+    border: none;
+    padding: 0.25rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+    transition: background-color 0.2s ease;
+}
+
+.dropdown-menu-end .dropdown-item img {
+    width: 24px;
+    height: 24px;
+    filter: invert(100%);
+    transition: transform 0.2s ease;
+}
+
+.dropdown-menu-end .dropdown-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.dropdown-menu-end .dropdown-item:hover img {
+    transform: scale(1.15);
+}
+.custom-dropdown {
+    background-color: #1e1e2f;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    width: 64px;
+    min-width: 64px;
+    padding: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.custom-dropdown .dropdown-item {
+    background: none;
+    border: none;
+    padding: 0.4rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+    transition: background-color 0.2s ease;
+}
+
+.custom-dropdown .dropdown-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.custom-dropdown .dropdown-item img {
+    width: 24px;
+    height: 24px;
+    filter: brightness(0) invert(1);
+    transition: transform 0.2s ease;
+}
+
+.custom-dropdown .dropdown-item:hover img {
+    transform: scale(1.15);
+}
+#btnScrollTop {
+    position: fixed;
+    bottom: 90px; /* más arriba que el de accesibilidad */
+    right: 20px;
+    z-index: 1000;
+    background-color: #343a40;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    padding: 10px 15px;
+    font-size: 20px;
+    display: none;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    transition: opacity 0.3s;
+}
+
+#btnScrollTop:hover {
+    background-color: #495057;
+}

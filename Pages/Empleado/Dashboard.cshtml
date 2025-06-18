@@ -1,0 +1,68 @@
+@page
+@model ProyectoProcesosExperienciaV1.Pages.Empleado.DashboardModel
+@{
+    ViewData["Title"] = "Panel de Empleado";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/empleado-dashboard.css" />
+}
+
+<div class="container mt-4">
+    <!-- 🧭 Migajas de pan -->
+    <nav aria-label="breadcrumb" class="breadcrumb-wrapper mb-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item active" aria-current="page">Inicio</li>
+        </ol>
+    </nav>
+
+    <!-- 🏷️ Encabezado -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="m-0">Hola, Juan Pérez 👋 ¿Qué deseas hacer hoy?</h2>
+</div>
+
+<!-- 📊 Tarjetas de resumen con enlaces -->
+<div class="row g-4">
+    <!-- Ventas (verde) -->
+    <div class="col-md-4">
+        <a href="/Empleado/Ventas" class="text-decoration-none">
+            <div class="card text-white bg-success dashboard-card h-100 hover-expand clickable-card">
+                <div class="card-body text-center d-flex flex-column justify-content-center">
+                    <h5 class="card-title">Ventas Hoy</h5>
+                    <p class="card-text display-6">0</p>
+                    <small>Ir a realizar ventas</small>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <!-- Inventario (negro) -->
+    <div class="col-md-4">
+        <a href="/Empleado/Inventario" class="text-decoration-none">
+            <div class="card text-white bg-dark dashboard-card h-100 hover-expand clickable-card">
+                <div class="card-body text-center d-flex flex-column justify-content-center">
+                    <h5 class="card-title">Inventario</h5>
+                    <p class="card-text display-6">2</p>
+                    <small>Consultar productos disponibles</small>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <!-- Historial (amarillo) -->
+    <div class="col-md-4">
+        <a href="/Empleado/Historial" class="text-decoration-none">
+            <div class="card text-dark bg-warning dashboard-card h-100 hover-expand clickable-card">
+                <div class="card-body text-center d-flex flex-column justify-content-center">
+                    <h5 class="card-title">Última venta</h5>
+                    <p class="card-text display-6">29/05/25</p>
+                    <small>Ver historial de ventas</small>
+                </div>
+            </div>
+        </a>
+    </div>
+</div>
+
+</div>
+

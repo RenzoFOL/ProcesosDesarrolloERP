@@ -1,0 +1,47 @@
+/* Estilos generales */
+h2 {
+    font-weight: bold;
+    color: #343a40;
+}
+
+/* Inputs */
+input#idProducto, input#cantidad {
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    transition: box-shadow 0.3s;
+}
+
+input#idProducto:focus, input#cantidad:focus {
+    box-shadow: 0 0 8px #007bff;
+}
+
+/* Botones */
+.btn {
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.btn-primary:hover, .btn-success:hover {
+    opacity: 0.85;
+}
+
+/* Tabla */
+.table {
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.table th, .table td {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Mensaje de error */
+#mensajeError {
+    width: 50%;
+    margin: 0 auto;
+}

@@ -1,0 +1,102 @@
+@page
+@model ProyectoProcesosExperienciaV1.Pages.Account.RegisterModel
+@{
+    ViewData["Title"] = "Crear Cuenta - ManaSys";
+}
+
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+
+            <div class="text-center mb-4">
+                <h2>Crear Cuenta</h2>
+                <p class="text-muted">Regístrate para comenzar a usar ManaSys</p>
+            </div>
+
+@if (Model.Success)
+{
+    <div class="alert alert-success alert-dismissible fade show text-center" role="alert" id="successAlert">
+        ✔ ¡Registro exitoso! Por favor revisa tu correo para confirmar tu cuenta.
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+    </div>
+}
+
+            else
+            {
+                <form method="post" novalidate>
+                    <!-- ✅ Mostrar errores generales como correo duplicado -->
+                    <!-- ✅ Alerta con errores generales y de validación -->
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert" id="validationAlert">
+        <ul class="mb-0">
+            @foreach (var modelState in ViewData.ModelState.Values)
+            {
+                foreach (var error in modelState.Errors)
+                {
+                    <li>@error.ErrorMessage</li>
+                }
+            }
+        </ul>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+    </div>
+}
+
+
+                    <div class="mb-3">
+                        <label asp-for="Input.Email" class="form-label">Correo electrónico</label>
+                        <input asp-for="Input.Email" class="form-control" placeholder="ejemplo@correo.com" />
+                        <span asp-validation-for="Input.Email" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Input.Password" class="form-label">Contraseña</label>
+                        <input asp-for="Input.Password" class="form-control" type="password" placeholder="Micontraseña123!" />
+                        <span asp-validation-for="Input.Password" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Input.ConfirmPassword" class="form-label">Confirmar Contraseña</label>
+                        <input asp-for="Input.ConfirmPassword" class="form-control" type="password" placeholder="Repite tu contraseña" />
+                        <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                    </div>
+
+                    <button type="submit" class="btn btn-success w-100">Registrarse</button>
+                </form>
+            }
+
+            <hr />
+
+            <div class="text-center">
+                <p>¿Ya tienes una cuenta?</p>
+                <a class="btn btn-outline-primary" href="/Account/Login">Iniciar Sesión</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const cerrarConTransicion = (id) => {
+                const el = document.getElementById(id);
+                if (!el) return;
+                setTimeout(() => {
+                    el.classList.add('fade-out');
+                    setTimeout(() => {
+                        const bsAlert = bootstrap.Alert.getOrCreateInstance(el);
+                        bsAlert.close();
+                    }, 500); // Tiempo de animación CSS
+                }, 10000); // Tiempo visible en pantalla (10 segundos)
+            };
+
+            cerrarConTransicion("validationAlert");
+            cerrarConTransicion("successAlert");
+        });
+    </script>
+}
+
+
+

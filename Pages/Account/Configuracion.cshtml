@@ -1,0 +1,86 @@
+@page
+@model ProyectoProcesosExperienciaV1.Pages.Account.ConfiguracionModel
+@{
+    ViewData["Title"] = "Configuración del Sistema";
+}
+
+<link rel="stylesheet" href="~/css/empleado-configuracion.css" />
+
+<div class="container mt-5">
+    <!-- 🧭 Migas de pan -->
+    <nav aria-label="breadcrumb" class="breadcrumb-wrapper mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/Empleado/Dashboard">Inicio</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Configuración</li>
+        </ol>
+    </nav>
+
+    <div class="row g-4">
+        <!-- 🔧 Sección de Configuración General -->
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="m-0">Configuración General</h5>
+                </div>
+                <div class="card-body">
+                    <form>
+                        <div class="mb-3">
+                            <label class="form-label">Notificaciones por correo</label>
+                            <select class="form-select">
+                                <option selected>Activadas</option>
+                                <option>Desactivadas</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Modo de visualización</label>
+                            <select class="form-select">
+                                <option>Claro</option>
+                                <option>Oscuro</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Idioma del sistema</label>
+                            <select class="form-select">
+                                <option selected>Español</option>
+                                <option>Inglés</option>
+                            </select>
+                        </div>
+
+                        <button type="button" class="btn btn-primary w-100" disabled>Guardar Cambios</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- ⌨️ Sección de Configuración Avanzada -->
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="m-0">Configuración Avanzada de Teclado</h5>
+                </div>
+                <div class="card-body">
+                    <form>
+                        <div class="mb-3">
+                            <label class="form-label">Abrir panel de ventas</label>
+                            <input type="text" class="form-control" value="Ctrl + V" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Ir al inventario</label>
+                            <input type="text" class="form-control" value="Ctrl + I" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Cerrar sesión</label>
+                            <input type="text" class="form-control" value="Ctrl + Q" />
+                        </div>
+
+                        <button type="button" class="btn btn-dark w-100" disabled>Guardar Atajos</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,21 @@
+@page
+@model ProyectoProcesosExperienciaV1.Pages.Account.ConfirmEmailModel
+@{
+    ViewData["Title"] = "Confirmación de Cuenta - ManaSys";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            <h1 class="text-success mb-4">¡Confirmación Exitosa!</h1>
+            <p class="text-muted">
+                Tu cuenta ha sido confirmada correctamente y ya puedes acceder a todas las funcionalidades de ManaSys. ¡Gracias por registrarte!
+            </p>
+            <a class="btn btn-primary mt-3" href="/Account/Login">Ir a Iniciar Sesión</a>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

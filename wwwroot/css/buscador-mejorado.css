@@ -1,0 +1,34 @@
+.buscador-mejorado {
+    border-radius: 2rem;
+    overflow: hidden;
+    background-color: white;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+    border: none;
+    max-width: 600px;
+}
+
+.buscador-mejorado input {
+    border: none !important;
+    padding: 0.85rem 1.4rem;
+    font-size: 1.05rem;
+    box-shadow: none;
+    outline: none;
+    background-color: transparent;
+    width: 100%;
+}
+
+.buscador-mejorado button {
+    background-color: #007bff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.85rem 1.2rem;
+    border: none;
+    border-radius: 0 2rem 2rem 0;
+}
+
+.buscador-mejorado button img {
+    filter: invert(1);
+    width: 20px;
+    height: 20px;
+}

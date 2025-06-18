@@ -1,0 +1,56 @@
+@page
+@model ProyectoProcesosExperienciaV1.Pages.SuperAdmin.PanelModel
+@{
+    ViewData["Title"] = "Panel SuperAdministrador - ManaSys";
+}
+
+<div class="container mt-5">
+
+    <h2 class="mb-4">Gestión de Usuarios</h2>
+
+    @if (TempData["Mensaje"] != null)
+    {
+        <div class="alert alert-success text-center">
+            @TempData["Mensaje"]
+        </div>
+    }
+
+    <form method="post">
+        @for (int i = 0; i < Model.Users.Count; i++)
+        {
+            var user = Model.Users[i];
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">@user.Email</h5>
+
+                    <div class="form-check form-switch mb-2">
+                        <input type="checkbox" class="form-check-input" name="Users[@i].IsEnabled" value="true" @(user.IsEnabled ? "checked" : "") />
+                        <label class="form-check-label">Cuenta habilitada</label>
+                    </div>
+
+                    <div class="form-check mb-2">
+                        <input type="checkbox" class="form-check-input" name="Users[@i].EmailConfirmed" value="true" @(user.EmailConfirmed ? "checked" : "") />
+                        <label class="form-check-label">Correo confirmado</label>
+                    </div>
+
+                    <div class="mb-2">
+                        <select class="form-select" name="Users[@i].RoleAssigned">
+                            <option value="Administrador" selected="@("Administrador" == user.RoleAssigned)">Admin</option>
+                            <option value="Gerente" selected="@("Gerente" == user.RoleAssigned)">Gerente</option>
+                            <option value="Empleado" selected="@("Empleado" == user.RoleAssigned)">Empleado</option>
+                        </select>
+                    </div>
+
+                    <input type="hidden" name="Users[@i].Id" value="@user.Id" />
+                </div>
+            </div>
+        }
+
+        <div class="d-grid">
+            <button type="submit" class="btn btn-primary btn-lg">💾 Guardar Cambios</button>
+        </div>
+    </form>
+
+</div>
+
+
